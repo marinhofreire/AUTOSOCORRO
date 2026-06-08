@@ -1,13 +1,540 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SouFind | Socorro</title>
-  <link rel="stylesheet" href="./styles.css">
+  <style>
+    :root {
+      --sf-black: #090909;
+      --sf-yellow: #f7b500;
+      --sf-yellow-dark: #d79a00;
+      --sf-white: #ffffff;
+      --sf-gray: #f4f4f4;
+      --sf-text: #1f1f1f;
+      --sf-border: rgba(255,255,255,0.12);
+      --sf-success: #138a4b;
+      --sf-danger: #b42318;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--sf-text);
+      background:
+        radial-gradient(circle at top, rgba(247,181,0,0.22), transparent 38%),
+        linear-gradient(180deg, #111 0%, #1b1b1b 24%, #f7f7f7 24%, #f7f7f7 100%);
+      min-height: 100vh;
+    }
+    .wrap {
+      width: min(100%, 560px);
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+    .hero {
+      background: var(--sf-black);
+      color: var(--sf-white);
+      border-radius: 24px;
+      padding: 22px 20px;
+      box-shadow: 0 14px 40px rgba(0,0,0,0.22);
+      border: 1px solid var(--sf-border);
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+    .brand-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: var(--sf-yellow);
+      color: var(--sf-black);
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      font-weight: 900;
+    }
+    .hero p {
+      margin: 14px 0 0;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.45;
+    }
+    .card {
+      margin-top: 18px;
+      background: rgba(255,255,255,0.96);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 16px 44px rgba(18,18,18,0.08);
+    }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .step {
+      padding: 10px 8px;
+      border-radius: 14px;
+      background: #ececec;
+      color: #666;
+      font-size: 12px;
+      text-align: center;
+      font-weight: 700;
+    }
+    .step.active {
+      background: var(--sf-yellow);
+      color: var(--sf-black);
+    }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    h2 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1.1;
+    }
+    .hint {
+      margin: 0 0 16px;
+      color: #666;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .service-option input { display: none; }
+    .service-chip {
+      display: block;
+      padding: 14px 12px;
+      border-radius: 16px;
+      border: 1px solid #ddd;
+      background: #fff;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      min-height: 56px;
+    }
+    .service-option input:checked + .service-chip {
+      background: var(--sf-black);
+      color: var(--sf-yellow);
+      border-color: var(--sf-black);
+    }
+    label.block {
+      display: block;
+      margin-top: 14px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    input, textarea, button {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid #d8d8d8;
+      padding: 13px 14px;
+      font: inherit;
+    }
+    input, textarea {
+      margin-top: 8px;
+      background: #fff;
+    }
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+    button {
+      cursor: pointer;
+      border: none;
+      background: var(--sf-yellow);
+      color: var(--sf-black);
+      font-weight: 800;
+      transition: transform .15s ease, background-color .15s ease;
+    }
+    button:hover { transform: translateY(-1px); background: var(--sf-yellow-dark); }
+    button.secondary {
+      background: #efefef;
+      color: #222;
+    }
+    button.ghost {
+      background: transparent;
+      border: 1px solid #ddd;
+    }
+    button.danger {
+      background: #1f1f1f;
+      color: #fff;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .actions > * { flex: 1; }
+    .status-box {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 16px;
+      display: none;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+    .status-box.show { display: block; }
+    .status-box.success {
+      background: rgba(19,138,75,0.1);
+      color: var(--sf-success);
+      border: 1px solid rgba(19,138,75,0.2);
+    }
+    .status-box.error {
+      background: rgba(180,35,24,0.08);
+      color: var(--sf-danger);
+      border: 1px solid rgba(180,35,24,0.16);
+    }
+    .micro {
+      margin-top: 10px;
+      color: #666;
+      font-size: 12px;
+    }
+    .demo-box {
+      display: none;
+      margin-top: 20px;
+      border-top: 1px dashed #ddd;
+      padding-top: 16px;
+    }
+    .demo-box.visible { display: block; }
+    .pill {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #fff7d6;
+      color: #6f5200;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    @media (max-width: 420px) {
+      .service-grid { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; }
+    }
+  </style>
 </head>
 <body>
-  <!-- Landing copiada do Bridge publicRescueHtml -->
-  <!-- Conteúdo gerado automaticamente para publicação estática -->
+  <div class="wrap">
+    <section class="hero">
+      <div class="brand">
+        <span class="brand-badge">S</span>
+        <span>SouFind</span>
+      </div>
+      <p>Abra seu pedido de socorro em poucos passos. Nossa central recebe os dados e tenta acionar o parceiro mais proximo.</p>
+    </section>
+
+    <section class="card">
+      <div class="steps">
+        <div class="step active" data-step-indicator="1">1. Problema</div>
+        <div class="step" data-step-indicator="2">2. Local</div>
+        <div class="step" data-step-indicator="3">3. Atendimento</div>
+      </div>
+
+      <form id="publicRescueForm">
+        <div class="panel active" data-step="1">
+          <h2>Qual problema aconteceu?</h2>
+          <p class="hint">Escolha a opção que mais combina com o atendimento que você precisa agora.</p>
+          <div class="service-grid">
+            <label class="service-option"><input type="radio" name="serviceType" value="guincho_leve" required><span class="service-chip">Guincho leve</span></label>
+            <label class="service-option"><input type="radio" name="serviceType" value="pane_eletrica"><span class="service-chip">Pane elétrica</span></label>
+            <label class="service-option"><input type="radio" name="serviceType" value="pane_mecanica"><span class="service-chip">Pane mecânica</span></label>
+            <label class="service-option"><input type="radio" name="serviceType" value="pneu"><span class="service-chip">Pneu furado</span></label>
+            <label class="service-option"><input type="radio" name="serviceType" value="bateria"><span class="service-chip">Bateria</span></label>
+            <label class="service-option"><input type="radio" name="serviceType" value="chaveiro"><span class="service-chip">Chaveiro</span></label>
+            <label class="service-option"><input type="radio" name="serviceType" value="combustivel"><span class="service-chip">Combustível</span></label>
+            <label class="service-option"><input type="radio" name="serviceType" value="outro"><span class="service-chip">Outro</span></label>
+          </div>
+          <div class="actions">
+            <button type="button" data-next>Continuar</button>
+          </div>
+        </div>
+
+        <div class="panel" data-step="2">
+          <h2>Onde você está?</h2>
+          <p class="hint">Podemos usar sua localização ou você pode preencher manualmente o endereço ou ponto de referência.</p>
+          <div class="actions" style="margin-top:0;">
+            <button type="button" class="secondary" id="btnGeo">Usar minha localizacao</button>
+          </div>
+          <label class="block">Endereço ou ponto de referência
+            <input type="text" name="originAddress" id="originAddress" placeholder="Rua, número, bairro, cidade" required />
+          </label>
+          <label class="block">Latitude
+            <input type="text" name="originLat" id="originLat" placeholder="-23.5505" />
+          </label>
+          <label class="block">Longitude
+            <input type="text" name="originLng" id="originLng" placeholder="-46.6333" />
+          </label>
+          <label class="block" id="destinationLabel" style="display:none;">Para onde levar o veículo?
+            <input type="text" name="destinationAddress" id="destinationAddress" placeholder="Endereço de destino" />
+          </label>
+          <label class="block">Latitude destino
+            <input type="text" name="destinationLat" id="destinationLat" placeholder="-23.5596" />
+          </label>
+          <label class="block">Longitude destino
+            <input type="text" name="destinationLng" id="destinationLng" placeholder="-46.6583" />
+          </label>
+          <div class="micro" id="geoStatus">Localizacao ainda nao capturada.</div>
+          <div class="actions">
+            <button type="button" class="ghost" data-back>Voltar</button>
+            <button type="button" data-next>Continuar</button>
+          </div>
+        </div>
+
+        <div class="panel" data-step="3">
+          <h2>Quem devemos atender?</h2>
+          <p class="hint">Esses dados ajudam nossa central a abrir a OS com o contexto certo.</p>
+          <label class="block">Nome
+            <input type="text" name="customerName" id="customerName" placeholder="Seu nome" required />
+          </label>
+          <label class="block">WhatsApp
+            <input type="tel" name="customerPhone" id="customerPhone" placeholder="11999999999" required />
+          </label>
+          <label class="block">Placa
+            <input type="text" name="vehiclePlate" id="vehiclePlate" placeholder="ABC1D23" />
+          </label>
+          <label class="block">Foto opcional
+            <input type="file" id="photo" accept="image/*" />
+          </label>
+          <label class="block">Observacao
+            <textarea name="note" id="note" placeholder="Descreva algo importante para o atendimento"></textarea>
+          </label>
+          <div class="actions">
+            <button type="button" class="ghost" data-back>Voltar</button>
+            <button type="submit" id="submitBtn">Solicitar socorro</button>
+          </div>
+        </div>
+      </form>
+
+      <div id="statusBox" class="status-box"></div>
+
+      <div id="demoBox" class="demo-box">
+        <span class="pill">Modo demo interno</span>
+        <label class="block">Requete ID para encerrar
+          <input type="text" id="demoRequeteId" placeholder="Ex.: 12" />
+        </label>
+        <div class="actions">
+          <button type="button" class="danger" id="demoCloseBtn">Encerrar OS Demo</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const form = document.getElementById("publicRescueForm");
+    const panels = Array.from(document.querySelectorAll("[data-step]"));
+    const indicators = Array.from(document.querySelectorAll("[data-step-indicator]"));
+    const statusBox = document.getElementById("statusBox");
+    const geoStatus = document.getElementById("geoStatus");
+    const submitBtn = document.getElementById("submitBtn");
+    const demoBox = document.getElementById("demoBox");
+    const params = new URLSearchParams(window.location.search);
+    const bridgeApiBase = params.get("bridgeBase") || "";
+    const tenant = params.get("tenant") || "DEMO01";
+    const demoMode = params.get("demo") === "1";
+    let currentStep = 1;
+    let photoBase64 = null;
+
+    if (demoMode) {
+      demoBox.classList.add("visible");
+    }
+
+    function endpoint(path) {
+      if (!bridgeApiBase) {
+        return path;
+      }
+      return bridgeApiBase.replace(/\/$/, "") + path;
+    }
+
+    function setStatus(kind, message, extra) {
+      statusBox.className = "status-box show " + (kind === "success" ? "success" : "error");
+      statusBox.innerHTML = "<strong>" + message + "</strong>" + (extra ? "<div class=\"micro\">" + extra + "</div>" : "");
+    }
+
+    function showStep(step) {
+      currentStep = step;
+      panels.forEach((panel) => panel.classList.toggle("active", Number(panel.dataset.step) === step));
+      indicators.forEach((item) => item.classList.toggle("active", Number(item.dataset.stepIndicator) === step));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function validateStep(step) {
+      if (step === 1) {
+        const selected = form.querySelector("input[name=serviceType]:checked");
+        if (!selected) {
+          setStatus("error", "Escolha o tipo de atendimento antes de continuar.");
+          return false;
+        }
+      }
+      if (step === 2) {
+        const originAddress = document.getElementById("originAddress").value.trim();
+        const originLat = document.getElementById("originLat").value.trim();
+        const originLng = document.getElementById("originLng").value.trim();
+        if (!originAddress && !(originLat && originLng)) {
+          setStatus("error", "Informe o endereco de origem ou capture a localizacao.");
+          return false;
+        }
+      }
+      return true;
+    }
+
+    document.querySelectorAll("[data-next]").forEach((button) => {
+      button.addEventListener("click", () => {
+        if (!validateStep(currentStep)) return;
+        setStatus("success", "", "");
+        statusBox.className = "status-box";
+        showStep(Math.min(3, currentStep + 1));
+      });
+    });
+
+    document.querySelectorAll("[data-back]").forEach((button) => {
+      button.addEventListener("click", () => showStep(Math.max(1, currentStep - 1)));
+    });
+
+    document.getElementById("btnGeo").addEventListener("click", () => {
+      if (!navigator.geolocation) {
+        geoStatus.textContent = "Seu navegador nao oferece geolocalizacao.";
+        return;
+      }
+
+      geoStatus.textContent = "Capturando localizacao...";
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          document.getElementById("originLat").value = position.coords.latitude.toFixed(6);
+          document.getElementById("originLng").value = position.coords.longitude.toFixed(6);
+          geoStatus.textContent = "Localizacao capturada. Confira o endereco e continue.";
+        },
+        () => {
+          geoStatus.textContent = "Nao foi possivel capturar automaticamente. Preencha o endereco manualmente.";
+        },
+        { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+      );
+    });
+
+    // show/hide destination when Guincho leve selected
+    function updateDestinationVisibility() {
+      const sel = form.querySelector("input[name=serviceType]:checked");
+      const val = sel ? sel.value : null;
+      const dest = document.getElementById("destinationLabel");
+      if (val === "guincho_leve") {
+        dest.style.display = "block";
+      } else {
+        dest.style.display = "none";
+      }
+    }
+
+    form.querySelectorAll("input[name=serviceType]").forEach((el) => {
+      el.addEventListener("change", updateDestinationVisibility);
+    });
+    // initial
+    updateDestinationVisibility();
+
+    document.getElementById("photo").addEventListener("change", async (event) => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) {
+        photoBase64 = null;
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        photoBase64 = typeof reader.result === "string" ? reader.result : null;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!validateStep(3)) return;
+
+      const payload = {
+        tenant,
+        source: "public_landing",
+        customerName: document.getElementById("customerName").value.trim(),
+        customerPhone: document.getElementById("customerPhone").value.trim(),
+        vehiclePlate: document.getElementById("vehiclePlate").value.trim(),
+        serviceType: (form.querySelector("input[name=serviceType]:checked") || {}).value || "",
+        originAddress: document.getElementById("originAddress").value.trim(),
+        originLat: document.getElementById("originLat").value.trim(),
+        originLng: document.getElementById("originLng").value.trim(),
+        destinationAddress: document.getElementById("destinationAddress").value.trim(),
+        destinationLat: document.getElementById("destinationLat").value.trim(),
+        destinationLng: document.getElementById("destinationLng").value.trim(),
+        note: document.getElementById("note").value.trim(),
+        photo: photoBase64
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Enviando...";
+      setStatus("success", "Estamos enviando sua solicitação.", "Aguarde alguns segundos.");
+
+      try {
+        const response = await fetch(endpoint("/api/bridge/soufind/public-rescue"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          // success message per spec
+          let micro = '';
+          if (result.booking_number) micro = 'Número de reserva: ' + result.booking_number;
+          if (demoMode && result.requete_id) {
+            document.getElementById("demoRequeteId").value = String(result.requete_id);
+          }
+          setStatus("success", "Solicitação recebida. Estamos buscando o parceiro mais próximo. Os avisos serão enviados pelo WhatsApp.", micro);
+          form.reset();
+          photoBase64 = null;
+          showStep(1);
+        } else {
+          // manual supervisor or error -> friendly message
+          setStatus("error", "Solicitação recebida. Nossa central vai continuar seu atendimento pelo WhatsApp.");
+        }
+      } catch (error) {
+        setStatus("error", "Recebemos sua solicitacao. Nossa central vai assumir o atendimento por este WhatsApp.", error instanceof Error ? error.message : "request_failed");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Solicitar socorro";
+      }
+    });
+
+    document.getElementById("demoCloseBtn").addEventListener("click", async () => {
+      const requeteId = document.getElementById("demoRequeteId").value.trim();
+      if (!requeteId) {
+        setStatus("error", "Informe o requete_id para encerrar a OS demo.");
+        return;
+      }
+
+      try {
+        const response = await fetch(endpoint("/api/bridge/soufind/demo-close"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tenant,
+            requete_id: requeteId,
+            reason: "demo_cleanup"
+          })
+        });
+        const result = await response.json();
+        const extra = [
+          result.requestId ? "requestId: " + result.requestId : null,
+          result.status ? "status: " + result.status : null
+        ].filter(Boolean).join(" | ");
+
+        if (response.ok && result.success) {
+          setStatus("success", result.message || "OS demo encerrada.", extra);
+        } else {
+          setStatus("error", result.message || "Nao foi possivel encerrar a OS demo.", extra || result.error || "demo_close_failed");
+        }
+      } catch (error) {
+        setStatus("error", "Nao foi possivel encerrar a OS demo.", error instanceof Error ? error.message : "request_failed");
+      }
+    });
+  </script>
 </body>
 </html>
