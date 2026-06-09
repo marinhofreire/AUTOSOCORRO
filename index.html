@@ -334,7 +334,7 @@
     const submitBtn = document.getElementById("submitBtn");
     const demoBox = document.getElementById("demoBox");
     const params = new URLSearchParams(window.location.search);
-    const bridgeApiBase = params.get("bridgeBase") || "";
+    const bridgeApiBase = params.get("bridgeBase") || "https://bridge.mackflow.com.br";
     const tenant = params.get("tenant") || "DEMO01";
     const demoMode = params.get("demo") === "1";
     let currentStep = 1;
