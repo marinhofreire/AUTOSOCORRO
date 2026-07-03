@@ -10,7 +10,6 @@
       --sf-yellow: #f7b500;
       --sf-yellow-dark: #d79a00;
       --sf-white: #ffffff;
-      --sf-gray: #f4f4f4;
       --sf-text: #1f1f1f;
       --sf-border: rgba(255,255,255,0.12);
       --sf-success: #138a4b;
@@ -26,242 +25,95 @@
         linear-gradient(180deg, #111 0%, #1b1b1b 24%, #f7f7f7 24%, #f7f7f7 100%);
       min-height: 100vh;
     }
-    .wrap {
-      width: min(100%, 560px);
-      margin: 0 auto;
-      padding: 24px 16px 40px;
-    }
+    .wrap { width: min(100%, 560px); margin: 0 auto; padding: 24px 16px 40px; }
     .hero {
-      background: var(--sf-black);
-      color: var(--sf-white);
-      border-radius: 24px;
-      padding: 22px 20px;
+      background: var(--sf-black); color: var(--sf-white);
+      border-radius: 24px; padding: 22px 20px;
       box-shadow: 0 14px 40px rgba(0,0,0,0.22);
       border: 1px solid var(--sf-border);
     }
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 30px;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-    }
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-size: 30px; font-weight: 800; letter-spacing: -0.04em; }
     .brand-badge {
-      width: 44px; height: 44px;
-      border-radius: 14px;
-      background: var(--sf-yellow);
-      color: var(--sf-black);
-      display: grid; place-items: center;
-      font-size: 24px; font-weight: 900;
+      width: 44px; height: 44px; border-radius: 14px;
+      background: var(--sf-yellow); color: var(--sf-black);
+      display: grid; place-items: center; font-size: 24px; font-weight: 900;
     }
     .hero p { margin: 14px 0 0; color: rgba(255,255,255,0.82); line-height: 1.45; }
     .card {
-      margin-top: 18px;
-      background: rgba(255,255,255,0.96);
-      border-radius: 24px;
-      padding: 18px;
+      margin-top: 18px; background: rgba(255,255,255,0.96);
+      border-radius: 24px; padding: 18px;
       box-shadow: 0 16px 44px rgba(18,18,18,0.08);
     }
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 18px;
-    }
-    .step {
-      padding: 10px 8px;
-      border-radius: 14px;
-      background: #ececec;
-      color: #666;
-      font-size: 12px;
-      text-align: center;
-      font-weight: 700;
-    }
+    .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 18px; }
+    .step { padding: 10px 8px; border-radius: 14px; background: #ececec; color: #666; font-size: 12px; text-align: center; font-weight: 700; }
     .step.active { background: var(--sf-yellow); color: var(--sf-black); }
     .panel { display: none; }
     .panel.active { display: block; }
     h2 { margin: 0 0 10px; font-size: 22px; line-height: 1.1; }
     .hint { margin: 0 0 16px; color: #666; line-height: 1.45; font-size: 14px; }
-    .service-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
+    .service-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
     .service-option input { display: none; }
-    .service-chip {
-      display: block;
-      padding: 14px 12px;
-      border-radius: 16px;
-      border: 1px solid #ddd;
-      background: #fff;
-      font-weight: 700;
-      text-align: center;
-      cursor: pointer;
-      min-height: 56px;
-    }
-    .service-option input:checked + .service-chip {
-      background: var(--sf-black);
-      color: var(--sf-yellow);
-      border-color: var(--sf-black);
-    }
+    .service-chip { display: block; padding: 14px 12px; border-radius: 16px; border: 1px solid #ddd; background: #fff; font-weight: 700; text-align: center; cursor: pointer; min-height: 56px; }
+    .service-option input:checked + .service-chip { background: var(--sf-black); color: var(--sf-yellow); border-color: var(--sf-black); }
     label.block { display: block; margin-top: 14px; font-size: 14px; font-weight: 700; }
-    input, textarea, button {
-      width: 100%;
-      border-radius: 14px;
-      border: 1px solid #d8d8d8;
-      padding: 13px 14px;
-      font: inherit;
-    }
+    input, textarea, button { width: 100%; border-radius: 14px; border: 1px solid #d8d8d8; padding: 13px 14px; font: inherit; }
     input, textarea { margin-top: 8px; background: #fff; }
     textarea { min-height: 92px; resize: vertical; }
-    button {
-      cursor: pointer; border: none;
-      background: var(--sf-yellow);
-      color: var(--sf-black);
-      font-weight: 800;
-      transition: transform .15s ease, background-color .15s ease;
-    }
+    button { cursor: pointer; border: none; background: var(--sf-yellow); color: var(--sf-black); font-weight: 800; transition: transform .15s, background-color .15s; }
     button:hover { transform: translateY(-1px); background: var(--sf-yellow-dark); }
     button.secondary { background: #efefef; color: #222; }
     button.ghost { background: transparent; border: 1px solid #ddd; }
     button.danger { background: #1f1f1f; color: #fff; }
     .actions { display: flex; gap: 10px; margin-top: 18px; }
     .actions > * { flex: 1; }
-    .status-box {
-      margin-top: 16px; padding: 14px;
-      border-radius: 16px; display: none;
-      line-height: 1.45; font-size: 14px;
-    }
+    .status-box { margin-top: 16px; padding: 14px; border-radius: 16px; display: none; line-height: 1.45; font-size: 14px; }
     .status-box.show { display: block; }
-    .status-box.success {
-      background: rgba(19,138,75,0.1);
-      color: var(--sf-success);
-      border: 1px solid rgba(19,138,75,0.2);
-    }
-    .status-box.error {
-      background: rgba(180,35,24,0.08);
-      color: var(--sf-danger);
-      border: 1px solid rgba(180,35,24,0.16);
-    }
+    .status-box.success { background: rgba(19,138,75,0.1); color: var(--sf-success); border: 1px solid rgba(19,138,75,0.2); }
+    .status-box.error { background: rgba(180,35,24,0.08); color: var(--sf-danger); border: 1px solid rgba(180,35,24,0.16); }
     .micro { margin-top: 10px; color: #666; font-size: 12px; }
     .demo-box { display: none; margin-top: 20px; border-top: 1px dashed #ddd; padding-top: 16px; }
     .demo-box.visible { display: block; }
-    .pill {
-      display: inline-block; margin-top: 10px;
-      padding: 7px 10px; border-radius: 999px;
-      background: #fff7d6; color: #6f5200;
-      font-size: 12px; font-weight: 700;
-    }
+    .pill { display: inline-block; margin-top: 10px; padding: 7px 10px; border-radius: 999px; background: #fff7d6; color: #6f5200; font-size: 12px; font-weight: 700; }
 
     /* Autocomplete */
-    .autocomplete-wrap { position: relative; }
-    .autocomplete-list {
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0; right: 0;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 14px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-      z-index: 999;
-      overflow: hidden;
-      display: none;
+    .ac-wrap { position: relative; }
+    .ac-list {
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+      background: #fff; border: 1px solid #ddd; border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 999;
+      overflow: hidden; display: none;
     }
-    .autocomplete-list.open { display: block; }
-    .autocomplete-item {
-      padding: 12px 14px;
-      font-size: 13px;
-      cursor: pointer;
-      border-bottom: 1px solid #f0f0f0;
-      line-height: 1.35;
+    .ac-list.open { display: block; }
+    .ac-item { padding: 12px 14px; font-size: 13px; cursor: pointer; border-bottom: 1px solid #f0f0f0; line-height: 1.35; }
+    .ac-item:last-child { border-bottom: none; }
+    .ac-item:hover { background: #fff7d6; }
+    .ac-item strong { display: block; font-size: 14px; }
+    .ac-item span { color: #666; }
+    .coord-badge {
+      display: none; align-items: center; gap: 6px;
+      margin-top: 6px; padding: 5px 10px;
+      border-radius: 999px; background: rgba(19,138,75,0.1);
+      color: var(--sf-success); font-size: 12px; font-weight: 700;
     }
-    .autocomplete-item:last-child { border-bottom: none; }
-    .autocomplete-item:hover { background: #fff7d6; }
-    .autocomplete-item strong { display: block; font-size: 14px; }
-    .geo-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      margin-top: 8px; padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(19,138,75,0.1);
-      color: var(--sf-success);
-      font-size: 12px; font-weight: 700;
-    }
-    .coords-row {
-      display: flex; gap: 8px; margin-top: 8px;
-    }
-    .coords-row label.block { margin-top: 0; flex: 1; }
+    .coord-badge.show { display: inline-flex; }
 
-    /* Tela de acompanhamento pós-OS */
+    /* Track card */
     .track-card { display: none; }
     .track-card.show { display: block; }
-    .track-hero {
-      text-align: center;
-      padding: 20px 0 10px;
-    }
-    .track-icon {
-      width: 64px; height: 64px;
-      border-radius: 50%;
-      background: rgba(19,138,75,0.12);
-      display: grid; place-items: center;
-      margin: 0 auto 14px;
-      font-size: 32px;
-    }
-    .track-os-num {
-      display: inline-block;
-      padding: 6px 16px;
-      border-radius: 999px;
-      background: var(--sf-yellow);
-      color: var(--sf-black);
-      font-size: 13px; font-weight: 800;
-      margin-bottom: 16px;
-    }
-    .track-steps {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin: 18px 0;
-    }
-    .track-step {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      background: #f7f7f7;
-      font-size: 13px;
-    }
+    .track-hero { text-align: center; padding: 20px 0 10px; }
+    .track-icon { width: 64px; height: 64px; border-radius: 50%; background: rgba(19,138,75,0.12); display: grid; place-items: center; margin: 0 auto 14px; font-size: 32px; }
+    .track-os-num { display: inline-block; padding: 6px 16px; border-radius: 999px; background: var(--sf-yellow); color: var(--sf-black); font-size: 13px; font-weight: 800; margin-bottom: 16px; }
+    .track-steps { display: flex; flex-direction: column; gap: 12px; margin: 18px 0; }
+    .track-step { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: #f7f7f7; font-size: 13px; }
     .track-step.done { background: rgba(19,138,75,0.08); }
     .track-step.active { background: rgba(247,181,0,0.12); border: 1px solid rgba(247,181,0,0.5); }
-    .track-dot {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      display: grid; place-items: center;
-      font-size: 14px;
-      flex-shrink: 0;
-    }
+    .track-dot { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; flex-shrink: 0; }
     .track-step.done .track-dot { background: var(--sf-success); color: #fff; }
     .track-step.active .track-dot { background: var(--sf-yellow); color: var(--sf-black); }
     .track-step.pending .track-dot { background: #e0e0e0; color: #999; }
-    .btn-wpp {
-      display: flex; align-items: center; justify-content: center;
-      gap: 10px;
-      padding: 15px;
-      border-radius: 14px;
-      background: #25D366;
-      color: #fff;
-      font-weight: 800;
-      font-size: 15px;
-      cursor: pointer;
-      border: none;
-      width: 100%;
-      margin-top: 6px;
-      transition: transform .15s ease, filter .15s ease;
-    }
+    .btn-wpp { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px; border-radius: 14px; background: #25D366; color: #fff; font-weight: 800; font-size: 15px; cursor: pointer; border: none; width: 100%; margin-top: 6px; transition: transform .15s, filter .15s; }
     .btn-wpp:hover { filter: brightness(1.08); transform: translateY(-1px); }
-    .btn-new-os {
-      margin-top: 10px;
-      background: #efefef;
-      color: #222;
-    }
+    .btn-new-os { margin-top: 10px; background: #efefef; color: #222; }
 
     @media (max-width: 420px) {
       .service-grid { grid-template-columns: 1fr; }
@@ -270,451 +122,453 @@
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <section class="hero">
-      <div class="brand">
-        <span class="brand-badge">S</span>
-        <span>SouFind</span>
-      </div>
-      <p>Abra seu pedido de socorro em poucos passos. Nossa central recebe os dados e tenta acionar o parceiro mais próximo.</p>
-    </section>
+<div class="wrap">
+  <section class="hero">
+    <div class="brand">
+      <span class="brand-badge">S</span>
+      <span>SouFind</span>
+    </div>
+    <p>Abra seu pedido de socorro em poucos passos. Nossa central recebe os dados e aciona o parceiro mais próximo.</p>
+  </section>
 
-    <section class="card">
-      <!-- Formulário multi-etapas -->
-      <div id="formSection">
-        <div class="steps">
-          <div class="step active" data-step-indicator="1">1. Problema</div>
-          <div class="step" data-step-indicator="2">2. Local</div>
-          <div class="step" data-step-indicator="3">3. Atendimento</div>
+  <section class="card">
+
+    <!-- FORMULÁRIO -->
+    <div id="formSection">
+      <div class="steps">
+        <div class="step active" data-step-indicator="1">1. Problema</div>
+        <div class="step" data-step-indicator="2">2. Local</div>
+        <div class="step" data-step-indicator="3">3. Atendimento</div>
+      </div>
+
+      <form id="publicRescueForm" onsubmit="return false;">
+
+        <!-- ETAPA 1 -->
+        <div class="panel active" data-step="1">
+          <h2>Qual problema aconteceu?</h2>
+          <p class="hint">Escolha a opção que mais combina com o atendimento que você precisa agora.</p>
+          <div class="service-grid">
+            <label class="service-option"><input type="radio" name="serviceType" value="guincho_leve" required><span class="service-chip">🚛 Guincho leve</span></label>
+            <label class="service-option"><input type="radio" name="serviceType" value="pane_eletrica"><span class="service-chip">⚡ Pane elétrica</span></label>
+            <label class="service-option"><input type="radio" name="serviceType" value="pane_mecanica"><span class="service-chip">🔧 Pane mecânica</span></label>
+            <label class="service-option"><input type="radio" name="serviceType" value="pneu"><span class="service-chip">🔴 Pneu furado</span></label>
+            <label class="service-option"><input type="radio" name="serviceType" value="bateria"><span class="service-chip">🔋 Bateria</span></label>
+            <label class="service-option"><input type="radio" name="serviceType" value="chaveiro"><span class="service-chip">🔑 Chaveiro</span></label>
+            <label class="service-option"><input type="radio" name="serviceType" value="combustivel"><span class="service-chip">⛽ Combustível</span></label>
+            <label class="service-option"><input type="radio" name="serviceType" value="outro"><span class="service-chip">❓ Outro</span></label>
+          </div>
+          <div class="actions">
+            <button type="button" data-next>Continuar →</button>
+          </div>
         </div>
 
-        <form id="publicRescueForm">
-          <!-- ETAPA 1 -->
-          <div class="panel active" data-step="1">
-            <h2>Qual problema aconteceu?</h2>
-            <p class="hint">Escolha a opção que mais combina com o atendimento que você precisa agora.</p>
-            <div class="service-grid">
-              <label class="service-option"><input type="radio" name="serviceType" value="guincho_leve" required><span class="service-chip">🚛 Guincho leve</span></label>
-              <label class="service-option"><input type="radio" name="serviceType" value="pane_eletrica"><span class="service-chip">⚡ Pane elétrica</span></label>
-              <label class="service-option"><input type="radio" name="serviceType" value="pane_mecanica"><span class="service-chip">🔧 Pane mecânica</span></label>
-              <label class="service-option"><input type="radio" name="serviceType" value="pneu"><span class="service-chip">🔴 Pneu furado</span></label>
-              <label class="service-option"><input type="radio" name="serviceType" value="bateria"><span class="service-chip">🔋 Bateria</span></label>
-              <label class="service-option"><input type="radio" name="serviceType" value="chaveiro"><span class="service-chip">🔑 Chaveiro</span></label>
-              <label class="service-option"><input type="radio" name="serviceType" value="combustivel"><span class="service-chip">⛽ Combustível</span></label>
-              <label class="service-option"><input type="radio" name="serviceType" value="outro"><span class="service-chip">❓ Outro</span></label>
-            </div>
-            <div class="actions">
-              <button type="button" data-next>Continuar →</button>
-            </div>
+        <!-- ETAPA 2 -->
+        <div class="panel" data-step="2">
+          <h2>Onde você está?</h2>
+          <p class="hint">Use sua localização ou digite o endereço — as sugestões aparecem automaticamente.</p>
+
+          <div class="actions" style="margin-top:0;">
+            <button type="button" class="secondary" id="btnGeo">📍 Usar minha localização</button>
           </div>
 
-          <!-- ETAPA 2 -->
-          <div class="panel" data-step="2">
-            <h2>Onde você está?</h2>
-            <p class="hint">Use sua localização ou digite o endereço — as sugestões aparecerão automaticamente.</p>
-
-            <div class="actions" style="margin-top:0;">
-              <button type="button" class="secondary" id="btnGeo">📍 Usar minha localização</button>
+          <!-- Origem -->
+          <label class="block">Endereço de origem
+            <div class="ac-wrap">
+              <input type="text" id="originAddress" name="originAddress" placeholder="Digite rua, bairro ou ponto de referência..." autocomplete="off" required />
+              <div class="ac-list" id="originSuggestions"></div>
             </div>
+          </label>
+          <span class="coord-badge" id="originBadge">✓ Localização capturada</span>
+          <input type="hidden" id="originLat" name="originLat" />
+          <input type="hidden" id="originLng" name="originLng" />
 
-            <div id="geoResult" style="display:none;">
-              <span class="geo-badge">✓ Localização capturada</span>
-            </div>
-
-            <label class="block">Endereço ou ponto de referência
-              <div class="autocomplete-wrap">
-                <input type="text" name="originAddress" id="originAddress"
-                  placeholder="Digite rua, bairro ou ponto de referência..."
-                  autocomplete="off" required />
-                <div class="autocomplete-list" id="addressSuggestions"></div>
+          <!-- Destino (guincho) -->
+          <div id="destinationSection" style="display:none;">
+            <label class="block" style="margin-top:18px;">Para onde levar o veículo?
+              <div class="ac-wrap">
+                <input type="text" id="destinationAddress" name="destinationAddress" placeholder="Digite o endereço de destino..." autocomplete="off" />
+                <div class="ac-list" id="destinationSuggestions"></div>
               </div>
             </label>
-
-            <div class="coords-row" id="coordsRow" style="display:none;">
-              <label class="block">Latitude
-                <input type="text" name="originLat" id="originLat" placeholder="-23.5505" readonly />
-              </label>
-              <label class="block">Longitude
-                <input type="text" name="originLng" id="originLng" placeholder="-46.6333" readonly />
-              </label>
-            </div>
-
-            <label class="block" id="destinationLabel" style="display:none;">Para onde levar o veículo?
-              <input type="text" name="destinationAddress" id="destinationAddress" placeholder="Endereço de destino" />
-            </label>
-            <div class="coords-row" id="destCoordsRow" style="display:none;">
-              <label class="block">Lat. destino
-                <input type="text" name="destinationLat" id="destinationLat" placeholder="-23.5596" />
-              </label>
-              <label class="block">Lng. destino
-                <input type="text" name="destinationLng" id="destinationLng" placeholder="-46.6583" />
-              </label>
-            </div>
-
-            <div class="micro" id="geoStatus"></div>
-            <div class="actions">
-              <button type="button" class="ghost" data-back>← Voltar</button>
-              <button type="button" data-next>Continuar →</button>
-            </div>
+            <span class="coord-badge" id="destinationBadge">✓ Destino capturado</span>
+            <input type="hidden" id="destinationLat" name="destinationLat" />
+            <input type="hidden" id="destinationLng" name="destinationLng" />
           </div>
 
-          <!-- ETAPA 3 -->
-          <div class="panel" data-step="3">
-            <h2>Quem devemos atender?</h2>
-            <p class="hint">Esses dados ajudam nossa central a abrir a OS com o contexto certo.</p>
-            <label class="block">Nome
-              <input type="text" name="customerName" id="customerName" placeholder="Seu nome" required />
-            </label>
-            <label class="block">WhatsApp
-              <input type="tel" name="customerPhone" id="customerPhone" placeholder="11999999999" required />
-            </label>
-            <label class="block">Placa
-              <input type="text" name="vehiclePlate" id="vehiclePlate" placeholder="ABC1D23" />
-            </label>
-            <label class="block">Foto opcional
-              <input type="file" id="photo" accept="image/*" />
-            </label>
-            <label class="block">Observação
-              <textarea name="note" id="note" placeholder="Descreva algo importante para o atendimento"></textarea>
-            </label>
-            <div class="actions">
-              <button type="button" class="ghost" data-back>← Voltar</button>
-              <button type="submit" id="submitBtn">Solicitar socorro</button>
-            </div>
+          <div class="micro" id="geoStatus"></div>
+          <div class="actions">
+            <button type="button" class="ghost" data-back>← Voltar</button>
+            <button type="button" data-next>Continuar →</button>
           </div>
-        </form>
+        </div>
 
-        <div id="statusBox" class="status-box"></div>
-
-        <div id="demoBox" class="demo-box">
-          <span class="pill">Modo demo interno</span>
-          <label class="block">Requete ID para encerrar
-            <input type="text" id="demoRequeteId" placeholder="Ex.: 12" />
+        <!-- ETAPA 3 -->
+        <div class="panel" data-step="3">
+          <h2>Quem devemos atender?</h2>
+          <p class="hint">Esses dados ajudam nossa central a abrir a OS com o contexto certo.</p>
+          <label class="block">Nome
+            <input type="text" id="customerName" name="customerName" placeholder="Seu nome" required />
+          </label>
+          <label class="block">WhatsApp
+            <input type="tel" id="customerPhone" name="customerPhone" placeholder="11999999999" required />
+          </label>
+          <label class="block">Placa
+            <input type="text" id="vehiclePlate" name="vehiclePlate" placeholder="ABC1D23" />
+          </label>
+          <label class="block">Foto opcional
+            <input type="file" id="photo" accept="image/*" />
+          </label>
+          <label class="block">Observação
+            <textarea id="note" name="note" placeholder="Descreva algo importante para o atendimento"></textarea>
           </label>
           <div class="actions">
-            <button type="button" class="danger" id="demoCloseBtn">Encerrar OS Demo</button>
+            <button type="button" class="ghost" data-back>← Voltar</button>
+            <button type="button" id="submitBtn">Solicitar socorro</button>
+          </div>
+        </div>
+
+      </form>
+
+      <div id="statusBox" class="status-box"></div>
+
+      <div id="demoBox" class="demo-box">
+        <span class="pill">Modo demo interno</span>
+        <label class="block">Requete ID para encerrar
+          <input type="text" id="demoRequeteId" placeholder="Ex.: 12" />
+        </label>
+        <div class="actions">
+          <button type="button" class="danger" id="demoCloseBtn">Encerrar OS Demo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA DE ACOMPANHAMENTO -->
+    <div id="trackCard" class="track-card">
+      <div class="track-hero">
+        <div class="track-icon">✅</div>
+        <h2 style="margin:0 0 6px;">OS aberta com sucesso!</h2>
+        <p class="hint" style="margin-bottom:8px;">Estamos buscando o parceiro mais próximo de você.</p>
+        <span class="track-os-num" id="trackOsNum">OS #---</span>
+      </div>
+      <div class="track-steps">
+        <div class="track-step done">
+          <div class="track-dot">✓</div>
+          <div>
+            <strong>Pedido recebido</strong>
+            <span style="color:#666;font-size:12px;display:block;">Sua solicitação foi registrada</span>
+          </div>
+        </div>
+        <div class="track-step active">
+          <div class="track-dot">⏳</div>
+          <div>
+            <strong>Buscando parceiro</strong>
+            <span style="color:#666;font-size:12px;display:block;">Acionando o mais próximo</span>
+          </div>
+        </div>
+        <div class="track-step pending">
+          <div class="track-dot">→</div>
+          <div>
+            <strong>Parceiro a caminho</strong>
+            <span style="color:#666;font-size:12px;display:block;">Você receberá aviso pelo WhatsApp</span>
           </div>
         </div>
       </div>
+      <button class="btn-wpp" id="btnWpp">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Falar com a central
+      </button>
+      <button class="btn-new-os" id="btnNewOs">Abrir nova O.S</button>
+    </div>
 
-      <!-- Tela de acompanhamento (pós-sucesso) -->
-      <div id="trackCard" class="track-card">
-        <div class="track-hero">
-          <div class="track-icon">✅</div>
-          <h2 style="margin:0 0 6px;">OS aberta com sucesso!</h2>
-          <p class="hint" style="margin-bottom:8px;">Estamos buscando o parceiro mais próximo de você.</p>
-          <span class="track-os-num" id="trackOsNum">OS #---</span>
-        </div>
+  </section>
+</div>
 
-        <div class="track-steps">
-          <div class="track-step done">
-            <div class="track-dot">✓</div>
-            <div><strong>Pedido recebido</strong><span style="color:#666; font-size:12px; display:block;">Sua solicitação foi registrada</span></div>
-          </div>
-          <div class="track-step active">
-            <div class="track-dot">⏳</div>
-            <div><strong>Buscando parceiro</strong><span style="color:#666; font-size:12px; display:block;">Acionando o mais próximo</span></div>
-          </div>
-          <div class="track-step pending">
-            <div class="track-dot">→</div>
-            <div><strong>Parceiro a caminho</strong><span style="color:#666; font-size:12px; display:block;">Você receberá aviso pelo WhatsApp</span></div>
-          </div>
-        </div>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const bridgeApiBase = params.get("bridgeBase") || "https://bridge.mackflow.com.br";
+  const tenant = params.get("tenant") || "DEMO01";
+  const demoMode = params.get("demo") === "1";
+  const wppCentral = params.get("wpp") || "5511999999999";
 
-        <button class="btn-wpp" id="btnWpp">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Falar com a central
-        </button>
+  if (demoMode) document.getElementById("demoBox").classList.add("visible");
 
-        <button class="btn-new-os" id="btnNewOs">Abrir nova O.S</button>
-      </div>
-    </section>
-  </div>
+  // ── Passos ──────────────────────────────────────────────────────────────────
+  const panels = Array.from(document.querySelectorAll("[data-step]"));
+  const indicators = Array.from(document.querySelectorAll("[data-step-indicator]"));
+  let currentStep = 1;
 
-  <script>
-    const form = document.getElementById("publicRescueForm");
-    const panels = Array.from(document.querySelectorAll("[data-step]"));
-    const indicators = Array.from(document.querySelectorAll("[data-step-indicator]"));
-    const statusBox = document.getElementById("statusBox");
-    const geoStatus = document.getElementById("geoStatus");
-    const submitBtn = document.getElementById("submitBtn");
-    const demoBox = document.getElementById("demoBox");
-    const formSection = document.getElementById("formSection");
-    const trackCard = document.getElementById("trackCard");
-    const trackOsNum = document.getElementById("trackOsNum");
+  function showStep(step) {
+    currentStep = step;
+    panels.forEach(p => p.classList.toggle("active", Number(p.dataset.step) === step));
+    indicators.forEach(i => i.classList.toggle("active", Number(i.dataset.stepIndicator) === step));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
-    const params = new URLSearchParams(window.location.search);
-    const bridgeApiBase = params.get("bridgeBase") || "https://bridge.mackflow.com.br";
-    const tenant = params.get("tenant") || "DEMO01";
-    const demoMode = params.get("demo") === "1";
-    const wppCentral = params.get("wpp") || "5511999999999";
-    let currentStep = 1;
-    let photoBase64 = null;
-    let lastBookingNumber = null;
+  document.querySelectorAll("[data-next]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (!validateStep(currentStep)) return;
+      clearStatus();
+      showStep(Math.min(3, currentStep + 1));
+    });
+  });
 
-    if (demoMode) demoBox.classList.add("visible");
+  document.querySelectorAll("[data-back]").forEach(btn => {
+    btn.addEventListener("click", () => showStep(Math.max(1, currentStep - 1)));
+  });
 
-    function endpoint(path) {
-      return (bridgeApiBase || "").replace(/\/$/, "") + path;
+  // ── Validação ────────────────────────────────────────────────────────────────
+  function validateStep(step) {
+    const isGuincho = selectedService() === "guincho_leve";
+
+    if (step === 1) {
+      if (!selectedService()) { setStatus("error", "Escolha o tipo de atendimento antes de continuar."); return false; }
     }
-
-    function setStatus(kind, message, extra) {
-      statusBox.className = "status-box show " + (kind === "success" ? "success" : "error");
-      statusBox.innerHTML = "<strong>" + message + "</strong>" + (extra ? "<div class=\"micro\">" + extra + "</div>" : "");
-    }
-
-    function showStep(step) {
-      currentStep = step;
-      panels.forEach(p => p.classList.toggle("active", Number(p.dataset.step) === step));
-      indicators.forEach(i => i.classList.toggle("active", Number(i.dataset.stepIndicator) === step));
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function validateStep(step) {
-      if (step === 1) {
-        if (!form.querySelector("input[name=serviceType]:checked")) {
-          setStatus("error", "Escolha o tipo de atendimento antes de continuar.");
-          return false;
-        }
+    if (step === 2) {
+      const addr = val("originAddress");
+      const lat  = val("originLat");
+      const lng  = val("originLng");
+      if (!addr) { setStatus("error", "Informe o endereço de origem."); return false; }
+      if (!lat || !lng) { setStatus("error", "Selecione um endereço da lista para capturar as coordenadas de origem."); return false; }
+      if (isGuincho) {
+        const daddr = val("destinationAddress");
+        const dlat  = val("destinationLat");
+        const dlng  = val("destinationLng");
+        if (!daddr) { setStatus("error", "Informe o endereço de destino para o guincho."); return false; }
+        if (!dlat || !dlng) { setStatus("error", "Selecione o destino da lista para capturar as coordenadas."); return false; }
       }
-      if (step === 2) {
-        const addr = document.getElementById("originAddress").value.trim();
-        const lat = document.getElementById("originLat").value.trim();
-        const lng = document.getElementById("originLng").value.trim();
-        if (!addr && !(lat && lng)) {
-          setStatus("error", "Informe o endereço de origem ou capture a localização.");
-          return false;
-        }
-        if (addr && !(lat && lng)) {
-          setStatus("error", "Selecione um endereço da lista de sugestões para capturar as coordenadas.");
-          return false;
-        }
-      }
-      return true;
+    }
+    if (step === 3) {
+      if (!val("customerName")) { setStatus("error", "Informe seu nome."); return false; }
+      if (!val("customerPhone")) { setStatus("error", "Informe seu WhatsApp."); return false; }
+    }
+    return true;
+  }
+
+  function selectedService() {
+    const el = document.querySelector("input[name=serviceType]:checked");
+    return el ? el.value : null;
+  }
+  function val(id) { return document.getElementById(id).value.trim(); }
+
+  // ── Status / UI ──────────────────────────────────────────────────────────────
+  const statusBox = document.getElementById("statusBox");
+  function setStatus(kind, msg, extra) {
+    statusBox.className = "status-box show " + (kind === "error" ? "error" : "success");
+    statusBox.innerHTML = "<strong>" + msg + "</strong>" + (extra ? "<div class=\"micro\">" + extra + "</div>" : "");
+  }
+  function clearStatus() { statusBox.className = "status-box"; }
+
+  // ── Guincho: mostrar/ocultar destino ────────────────────────────────────────
+  document.querySelectorAll("input[name=serviceType]").forEach(el => {
+    el.addEventListener("change", () => {
+      const show = el.value === "guincho_leve" && el.checked;
+      document.getElementById("destinationSection").style.display = show ? "block" : "none";
+    });
+  });
+
+  // ── Autocomplete genérico ────────────────────────────────────────────────────
+  function setupAutocomplete(inputId, listId, latId, lngId, badgeId) {
+    const input = document.getElementById(inputId);
+    const list  = document.getElementById(listId);
+    const badge = document.getElementById(badgeId);
+    let timer = null;
+
+    function clearCoords() {
+      document.getElementById(latId).value = "";
+      document.getElementById(lngId).value = "";
+      badge.classList.remove("show");
     }
 
-    document.querySelectorAll("[data-next]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        if (!validateStep(currentStep)) return;
-        statusBox.className = "status-box";
-        showStep(Math.min(3, currentStep + 1));
-      });
-    });
-
-    document.querySelectorAll("[data-back]").forEach(btn => {
-      btn.addEventListener("click", () => showStep(Math.max(1, currentStep - 1)));
-    });
-
-    // Geolocalização
-    document.getElementById("btnGeo").addEventListener("click", () => {
-      if (!navigator.geolocation) {
-        geoStatus.textContent = "Seu navegador não oferece geolocalização.";
-        return;
-      }
-      geoStatus.textContent = "Capturando localização...";
-      navigator.geolocation.getCurrentPosition(
-        async (pos) => {
-          const lat = pos.coords.latitude.toFixed(6);
-          const lng = pos.coords.longitude.toFixed(6);
-          document.getElementById("originLat").value = lat;
-          document.getElementById("originLng").value = lng;
-          document.getElementById("coordsRow").style.display = "flex";
-          document.getElementById("geoResult").style.display = "block";
-          geoStatus.textContent = "";
-          // Reverse geocode para preencher endereço
-          try {
-            const r = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
-              { headers: { "Accept-Language": "pt-BR" } }
-            );
-            const d = await r.json();
-            if (d && d.display_name) {
-              document.getElementById("originAddress").value = d.display_name;
-            }
-          } catch (_) {}
-        },
-        () => { geoStatus.textContent = "Não foi possível capturar. Preencha o endereço manualmente."; },
-        { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
-      );
-    });
-
-    // Autocomplete Nominatim
-    let acTimer = null;
-    const addrInput = document.getElementById("originAddress");
-    const suggList = document.getElementById("addressSuggestions");
-
-    addrInput.addEventListener("input", () => {
-      clearTimeout(acTimer);
-      const q = addrInput.value.trim();
-      if (q.length < 3) { closeSuggestions(); return; }
-      acTimer = setTimeout(() => fetchSuggestions(q), 400);
-    });
-
-    addrInput.addEventListener("blur", () => {
-      setTimeout(closeSuggestions, 200);
-    });
-
-    function closeSuggestions() {
-      suggList.classList.remove("open");
-      suggList.innerHTML = "";
+    function setCoords(lat, lon, displayName) {
+      input.value = displayName;
+      document.getElementById(latId).value = parseFloat(lat).toFixed(6);
+      document.getElementById(lngId).value = parseFloat(lon).toFixed(6);
+      badge.classList.add("show");
+      closeList();
     }
 
-    async function fetchSuggestions(query) {
-      try {
-        const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&countrycodes=br&limit=5&addressdetails=1`;
-        const res = await fetch(url, { headers: { "Accept-Language": "pt-BR" } });
-        const results = await res.json();
-        renderSuggestions(results);
-      } catch (_) { closeSuggestions(); }
-    }
+    function closeList() { list.classList.remove("open"); list.innerHTML = ""; }
 
-    function renderSuggestions(results) {
-      suggList.innerHTML = "";
-      if (!results || results.length === 0) { closeSuggestions(); return; }
+    function renderList(results) {
+      list.innerHTML = "";
+      if (!results || !results.length) { closeList(); return; }
       results.forEach(item => {
-        const el = document.createElement("div");
-        el.className = "autocomplete-item";
-        const main = item.address
-          ? [item.address.road, item.address.suburb || item.address.neighbourhood, item.address.city || item.address.town].filter(Boolean).join(", ")
-          : item.display_name.split(",").slice(0, 2).join(",");
-        const detail = item.address
-          ? [item.address.city || item.address.town, item.address.state].filter(Boolean).join(" — ")
-          : "";
-        el.innerHTML = `<strong>${main || item.display_name}</strong>${detail ? `<span style="color:#666">${detail}</span>` : ""}`;
-        el.addEventListener("mousedown", () => {
-          addrInput.value = item.display_name;
-          document.getElementById("originLat").value = parseFloat(item.lat).toFixed(6);
-          document.getElementById("originLng").value = parseFloat(item.lon).toFixed(6);
-          document.getElementById("coordsRow").style.display = "flex";
-          document.getElementById("geoResult").style.display = "block";
-          closeSuggestions();
-          geoStatus.textContent = "";
+        const div = document.createElement("div");
+        div.className = "ac-item";
+        const a = item.address || {};
+        const main = [a.road, a.suburb || a.neighbourhood, a.city || a.town].filter(Boolean).join(", ")
+                     || item.display_name.split(",").slice(0, 2).join(",");
+        const detail = [a.city || a.town, a.state].filter(Boolean).join(" — ");
+        div.innerHTML = "<strong>" + main + "</strong>" + (detail ? "<span>" + detail + "</span>" : "");
+        div.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          setCoords(item.lat, item.lon, item.display_name);
         });
-        suggList.appendChild(el);
+        list.appendChild(div);
       });
-      suggList.classList.add("open");
+      list.classList.add("open");
     }
 
-    // Mostrar/ocultar destino para guincho
-    function updateDestinationVisibility() {
-      const sel = form.querySelector("input[name=serviceType]:checked");
-      const isGuincho = sel && sel.value === "guincho_leve";
-      document.getElementById("destinationLabel").style.display = isGuincho ? "block" : "none";
-      document.getElementById("destCoordsRow").style.display = isGuincho ? "flex" : "none";
-    }
-    form.querySelectorAll("input[name=serviceType]").forEach(el => el.addEventListener("change", updateDestinationVisibility));
-    updateDestinationVisibility();
-
-    // Foto
-    document.getElementById("photo").addEventListener("change", async (e) => {
-      const file = e.target.files && e.target.files[0];
-      if (!file) { photoBase64 = null; return; }
-      const reader = new FileReader();
-      reader.onload = () => { photoBase64 = typeof reader.result === "string" ? reader.result : null; };
-      reader.readAsDataURL(file);
-    });
-
-    // Envio
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      if (!validateStep(3)) return;
-
-      const payload = {
-        tenant,
-        source: "public_landing",
-        customerName: document.getElementById("customerName").value.trim(),
-        customerPhone: document.getElementById("customerPhone").value.trim(),
-        vehiclePlate: document.getElementById("vehiclePlate").value.trim(),
-        serviceType: (form.querySelector("input[name=serviceType]:checked") || {}).value || "",
-        originAddress: document.getElementById("originAddress").value.trim(),
-        originLat: document.getElementById("originLat").value.trim(),
-        originLng: document.getElementById("originLng").value.trim(),
-        destinationAddress: document.getElementById("destinationAddress").value.trim(),
-        destinationLat: document.getElementById("destinationLat").value.trim(),
-        destinationLng: document.getElementById("destinationLng").value.trim(),
-        note: document.getElementById("note").value.trim(),
-        photo: photoBase64
-      };
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Enviando...";
-      setStatus("success", "Estamos enviando sua solicitação.", "Aguarde alguns segundos.");
-
+    async function search(q) {
       try {
-        const response = await fetch(endpoint("/api/bridge/soufind/public-rescue"), {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        const result = await response.json();
-
-        if (response.ok && result.success) {
-          lastBookingNumber = result.booking_number || null;
-          if (demoMode && result.requete_id) {
-            document.getElementById("demoRequeteId").value = String(result.requete_id);
-          }
-          showTrackCard(lastBookingNumber, payload.customerPhone);
-        } else {
-          showTrackCard(null, payload.customerPhone);
-        }
-      } catch (_) {
-        showTrackCard(null, payload.customerPhone);
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Solicitar socorro";
-      }
-    });
-
-    function showTrackCard(osNumber, phone) {
-      formSection.style.display = "none";
-      trackCard.classList.add("show");
-      trackOsNum.textContent = osNumber ? "OS #" + osNumber : "OS registrada";
-
-      const wppMsg = encodeURIComponent(
-        osNumber
-          ? "Olá, acabei de abrir a OS #" + osNumber + " pelo SouFind. Gostaria de acompanhar o atendimento."
-          : "Olá, acabei de solicitar socorro pelo SouFind. Gostaria de acompanhar o atendimento."
-      );
-      document.getElementById("btnWpp").onclick = () => {
-        window.open("https://wa.me/" + wppCentral + "?text=" + wppMsg, "_blank");
-      };
+        const r = await fetch(
+          "https://nominatim.openstreetmap.org/search?q=" + encodeURIComponent(q) +
+          "&format=json&countrycodes=br&limit=5&addressdetails=1",
+          { headers: { "Accept-Language": "pt-BR" } }
+        );
+        renderList(await r.json());
+      } catch (_) { closeList(); }
     }
 
-    document.getElementById("btnNewOs").addEventListener("click", () => {
-      trackCard.classList.remove("show");
-      formSection.style.display = "block";
-      form.reset();
-      photoBase64 = null;
-      lastBookingNumber = null;
-      document.getElementById("originLat").value = "";
-      document.getElementById("originLng").value = "";
-      document.getElementById("coordsRow").style.display = "none";
-      document.getElementById("geoResult").style.display = "none";
-      statusBox.className = "status-box";
-      showStep(1);
+    input.addEventListener("input", () => {
+      clearCoords();
+      clearTimeout(timer);
+      const q = input.value.trim();
+      if (q.length < 3) { closeList(); return; }
+      timer = setTimeout(() => search(q), 420);
     });
 
-    // Demo: encerrar OS
-    document.getElementById("demoCloseBtn").addEventListener("click", async () => {
-      const requeteId = document.getElementById("demoRequeteId").value.trim();
-      if (!requeteId) { setStatus("error", "Informe o requete_id para encerrar a OS demo."); return; }
-      try {
-        const response = await fetch(endpoint("/api/bridge/soufind/demo-close"), {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ tenant, requete_id: requeteId, reason: "demo_cleanup" })
-        });
-        const result = await response.json();
-        const extra = [result.requestId && "requestId: " + result.requestId, result.status && "status: " + result.status].filter(Boolean).join(" | ");
-        if (response.ok && result.success) {
-          setStatus("success", result.message || "OS demo encerrada.", extra);
-        } else {
-          setStatus("error", result.message || "Não foi possível encerrar.", extra || result.error || "demo_close_failed");
+    input.addEventListener("blur", () => setTimeout(closeList, 180));
+
+    return { setCoords };
+  }
+
+  const originAC = setupAutocomplete("originAddress", "originSuggestions", "originLat", "originLng", "originBadge");
+  setupAutocomplete("destinationAddress", "destinationSuggestions", "destinationLat", "destinationLng", "destinationBadge");
+
+  // ── GPS ──────────────────────────────────────────────────────────────────────
+  document.getElementById("btnGeo").addEventListener("click", () => {
+    if (!navigator.geolocation) { document.getElementById("geoStatus").textContent = "Geolocalização não disponível."; return; }
+    document.getElementById("geoStatus").textContent = "Capturando localização...";
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        document.getElementById("geoStatus").textContent = "";
+        try {
+          const r = await fetch(
+            "https://nominatim.openstreetmap.org/reverse?lat=" + lat + "&lon=" + lng + "&format=json",
+            { headers: { "Accept-Language": "pt-BR" } }
+          );
+          const d = await r.json();
+          originAC.setCoords(lat, lng, d.display_name || lat + "," + lng);
+        } catch (_) {
+          originAC.setCoords(lat, lng, lat.toFixed(6) + "," + lng.toFixed(6));
         }
-      } catch (err) {
-        setStatus("error", "Não foi possível encerrar a OS demo.", err instanceof Error ? err.message : "request_failed");
+      },
+      () => { document.getElementById("geoStatus").textContent = "Não foi possível capturar. Digite o endereço manualmente."; },
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+    );
+  });
+
+  // ── Foto ─────────────────────────────────────────────────────────────────────
+  let photoBase64 = null;
+  document.getElementById("photo").addEventListener("change", (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) { photoBase64 = null; return; }
+    const reader = new FileReader();
+    reader.onload = () => { photoBase64 = reader.result || null; };
+    reader.readAsDataURL(file);
+  });
+
+  // ── Envio ────────────────────────────────────────────────────────────────────
+  document.getElementById("submitBtn").addEventListener("click", async () => {
+    if (!validateStep(3)) return;
+
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "Enviando...";
+    setStatus("success", "Estamos enviando sua solicitação.", "Aguarde alguns segundos.");
+
+    const payload = {
+      tenant,
+      source: "public_landing",
+      customerName: val("customerName"),
+      customerPhone: val("customerPhone"),
+      vehiclePlate: val("vehiclePlate"),
+      serviceType: selectedService() || "",
+      originAddress: val("originAddress"),
+      originLat: val("originLat"),
+      originLng: val("originLng"),
+      destinationAddress: val("destinationAddress"),
+      destinationLat: val("destinationLat"),
+      destinationLng: val("destinationLng"),
+      note: val("note"),
+      photo: photoBase64
+    };
+
+    let bookingNumber = null;
+    try {
+      const res = await fetch(bridgeApiBase.replace(/\/$/, "") + "/api/bridge/soufind/public-rescue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        bookingNumber = data.booking_number || null;
+        if (demoMode && data.requete_id) {
+          document.getElementById("demoRequeteId").value = String(data.requete_id);
+        }
       }
-    });
-  </script>
+    } catch (_) {}
+
+    btn.disabled = false;
+    btn.textContent = "Solicitar socorro";
+    showTrackCard(bookingNumber, val("customerPhone"));
+  });
+
+  // ── Tela de acompanhamento ───────────────────────────────────────────────────
+  function showTrackCard(osNumber, phone) {
+    document.getElementById("formSection").style.display = "none";
+    document.getElementById("trackCard").classList.add("show");
+    document.getElementById("trackOsNum").textContent = osNumber ? "OS #" + osNumber : "OS registrada";
+
+    const msg = encodeURIComponent(
+      osNumber
+        ? "Olá, acabei de abrir a OS #" + osNumber + " pelo SouFind. Gostaria de acompanhar o atendimento."
+        : "Olá, acabei de solicitar socorro pelo SouFind. Gostaria de acompanhar o atendimento."
+    );
+    document.getElementById("btnWpp").onclick = () => {
+      window.open("https://wa.me/" + wppCentral + "?text=" + msg, "_blank");
+    };
+  }
+
+  document.getElementById("btnNewOs").addEventListener("click", () => {
+    document.getElementById("trackCard").classList.remove("show");
+    document.getElementById("formSection").style.display = "block";
+    // limpa formulário SEM resetar a página
+    document.getElementById("publicRescueForm").reset();
+    photoBase64 = null;
+    document.getElementById("originLat").value = "";
+    document.getElementById("originLng").value = "";
+    document.getElementById("destinationLat").value = "";
+    document.getElementById("destinationLng").value = "";
+    document.getElementById("originBadge").classList.remove("show");
+    document.getElementById("destinationBadge").classList.remove("show");
+    document.getElementById("destinationSection").style.display = "none";
+    clearStatus();
+    showStep(1);
+  });
+
+  // ── Demo: encerrar ───────────────────────────────────────────────────────────
+  document.getElementById("demoCloseBtn").addEventListener("click", async () => {
+    const requeteId = document.getElementById("demoRequeteId").value.trim();
+    if (!requeteId) { setStatus("error", "Informe o requete_id para encerrar a OS demo."); return; }
+    try {
+      const res = await fetch(bridgeApiBase.replace(/\/$/, "") + "/api/bridge/soufind/demo-close", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tenant, requete_id: requeteId, reason: "demo_cleanup" })
+      });
+      const d = await res.json();
+      const extra = [d.requestId && "requestId: " + d.requestId, d.status && "status: " + d.status].filter(Boolean).join(" | ");
+      if (res.ok && d.success) setStatus("success", d.message || "OS demo encerrada.", extra);
+      else setStatus("error", d.message || "Não foi possível encerrar.", extra || d.error);
+    } catch (err) {
+      setStatus("error", "Não foi possível encerrar a OS demo.", err.message || "request_failed");
+    }
+  });
+</script>
 </body>
 </html>
