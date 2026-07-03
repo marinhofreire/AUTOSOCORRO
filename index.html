@@ -115,11 +115,23 @@
     .btn-wpp:hover { filter: brightness(1.08); transform: translateY(-1px); }
     .btn-new-os { margin-top: 10px; background: #efefef; color: #222; }
 
+    /* Mapa de tracking */
+    #trackMap { width: 100%; height: 220px; border-radius: 16px; overflow: hidden; margin-bottom: 14px; background: #e8e8e8; position: relative; }
+    .track-eta-bar { display: none; align-items: center; gap: 10px; background: rgba(247,181,0,0.12); border: 1px solid rgba(247,181,0,0.5); border-radius: 12px; padding: 10px 14px; margin-bottom: 12px; font-size: 13px; font-weight: 700; color: #1f1f1f; }
+    .track-eta-bar.show { display: flex; }
+    .track-eta-icon { font-size: 20px; }
+    .track-status-label { font-size: 11px; color: #888; font-weight: 500; display: block; margin-bottom: 2px; }
+    .track-step-label { font-size: 13px; font-weight: 700; }
+    .track-step-sub { font-size: 11px; color: #888; }
+    .searching-pulse { animation: pulse 1.4s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.45} }
+
     @media (max-width: 420px) {
       .service-grid { grid-template-columns: 1fr; }
       .actions { flex-direction: column; }
     }
   </style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
 <div class="wrap">
@@ -250,29 +262,57 @@
         <p class="hint" style="margin-bottom:8px;">Estamos buscando o parceiro mais próximo de você.</p>
         <span class="track-os-num" id="trackOsNum">OS #---</span>
       </div>
-      <div class="track-steps">
-        <div class="track-step done">
+
+      <!-- Mapa ao vivo -->
+      <div id="trackMap"></div>
+
+      <!-- Barra de ETA -->
+      <div class="track-eta-bar" id="trackEtaBar">
+        <span class="track-eta-icon">🚗</span>
+        <div>
+          <span class="track-status-label" id="trackEtaLabel">Parceiro a caminho</span>
+          <span id="trackEtaValue" style="font-weight:800;font-size:15px;">--</span>
+        </div>
+      </div>
+
+      <div class="track-steps" id="trackSteps">
+        <div class="track-step done" id="tStep0">
           <div class="track-dot">✓</div>
           <div>
-            <strong>Pedido recebido</strong>
-            <span style="color:#666;font-size:12px;display:block;">Sua solicitação foi registrada</span>
+            <div class="track-step-label">Pedido recebido</div>
+            <div class="track-step-sub">Sua solicitação foi registrada</div>
           </div>
         </div>
-        <div class="track-step active">
-          <div class="track-dot">⏳</div>
+        <div class="track-step active" id="tStep1">
+          <div class="track-dot searching-pulse">⏳</div>
           <div>
-            <strong>Buscando parceiro</strong>
-            <span style="color:#666;font-size:12px;display:block;">Acionando o mais próximo</span>
+            <div class="track-step-label" id="tStep1Label">Buscando parceiro</div>
+            <div class="track-step-sub" id="tStep1Sub">Acionando o mais próximo</div>
           </div>
         </div>
-        <div class="track-step pending">
+        <div class="track-step pending" id="tStep2">
           <div class="track-dot">→</div>
           <div>
-            <strong>Parceiro a caminho</strong>
-            <span style="color:#666;font-size:12px;display:block;">Você receberá aviso pelo WhatsApp</span>
+            <div class="track-step-label">Parceiro a caminho</div>
+            <div class="track-step-sub">Acompanhe no mapa acima</div>
+          </div>
+        </div>
+        <div class="track-step pending" id="tStep3">
+          <div class="track-dot">→</div>
+          <div>
+            <div class="track-step-label">Em atendimento</div>
+            <div class="track-step-sub">Serviço em execução</div>
+          </div>
+        </div>
+        <div class="track-step pending" id="tStep4">
+          <div class="track-dot">→</div>
+          <div>
+            <div class="track-step-label">Concluído</div>
+            <div class="track-step-sub">Atendimento finalizado</div>
           </div>
         </div>
       </div>
+
       <button class="btn-wpp" id="btnWpp">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         Falar com a central
@@ -498,6 +538,7 @@
     };
 
     let bookingNumber = null;
+    let requeteId = null;
     try {
       const res = await fetch(bridgeApiBase.replace(/\/$/, "") + "/api/bridge/soufind/public-rescue", {
         method: "POST",
@@ -507,31 +548,186 @@
       const data = await res.json();
       if (res.ok && data.success) {
         bookingNumber = data.booking_number || null;
-        if (demoMode && data.requete_id) {
-          document.getElementById("demoRequeteId").value = String(data.requete_id);
+        requeteId = data.requete_id || null;
+        if (demoMode && requeteId) {
+          document.getElementById("demoRequeteId").value = String(requeteId);
         }
       }
     } catch (_) {}
 
     btn.disabled = false;
     btn.textContent = "Solicitar socorro";
-    showTrackCard(bookingNumber, val("customerPhone"));
+    showTrackCard(bookingNumber, val("customerPhone"), requeteId, val("originLat"), val("originLng"));
   });
 
   // ── Tela de acompanhamento ───────────────────────────────────────────────────
-  function showTrackCard(osNumber, phone) {
+  let _trackMap = null;
+  let _clientMarker = null;
+  let _driverMarker = null;
+  let _routeLine = null;
+  let _pusher = null;
+  let _driverChannel = null;
+
+  function _stepEl(n) { return document.getElementById("tStep" + n); }
+
+  function setTrackStep(status) {
+    // status: 'new' | 'confirmed' | 'on ride' | 'completed' | 'canceled'
+    const steps = [0,1,2,3,4];
+    steps.forEach(n => {
+      const el = _stepEl(n);
+      if (!el) return;
+      el.classList.remove("done","active","pending");
+    });
+    _stepEl(0).classList.add("done");
+
+    if (status === "new") {
+      _stepEl(1).classList.add("active");
+      [2,3,4].forEach(n => _stepEl(n).classList.add("pending"));
+      document.getElementById("tStep1Label").textContent = "Buscando parceiro";
+      document.getElementById("tStep1Sub").textContent = "Acionando o mais próximo";
+      _stepEl(1).querySelector(".track-dot").textContent = "⏳";
+      _stepEl(1).querySelector(".track-dot").classList.add("searching-pulse");
+    } else if (status === "confirmed") {
+      _stepEl(1).classList.add("done");
+      _stepEl(1).querySelector(".track-dot").textContent = "✓";
+      _stepEl(1).querySelector(".track-dot").classList.remove("searching-pulse");
+      _stepEl(2).classList.add("active");
+      _stepEl(2).querySelector(".track-dot").textContent = "🚗";
+      [3,4].forEach(n => _stepEl(n).classList.add("pending"));
+      document.getElementById("trackEtaBar").classList.add("show");
+      document.getElementById("trackEtaLabel").textContent = "Parceiro a caminho — ETA";
+    } else if (status === "on ride") {
+      [1,2].forEach(n => { _stepEl(n).classList.add("done"); _stepEl(n).querySelector(".track-dot").textContent = "✓"; });
+      _stepEl(1).querySelector(".track-dot").classList.remove("searching-pulse");
+      _stepEl(3).classList.add("active");
+      _stepEl(3).querySelector(".track-dot").textContent = "🔧";
+      _stepEl(4).classList.add("pending");
+      document.getElementById("trackEtaLabel").textContent = "Em atendimento";
+    } else if (status === "completed") {
+      [1,2,3,4].forEach(n => { _stepEl(n).classList.add("done"); _stepEl(n).querySelector(".track-dot").textContent = "✓"; });
+      _stepEl(1).querySelector(".track-dot").classList.remove("searching-pulse");
+      document.getElementById("trackEtaBar").classList.remove("show");
+    } else if (status === "canceled" || status === "rejected") {
+      _stepEl(1).classList.add("pending");
+      _stepEl(1).querySelector(".track-dot").textContent = "✗";
+      _stepEl(1).querySelector(".track-dot").classList.remove("searching-pulse");
+      document.getElementById("tStep1Label").textContent = "OS cancelada";
+      document.getElementById("tStep1Sub").textContent = "Entre em contato com a central";
+      [2,3,4].forEach(n => _stepEl(n).classList.add("pending"));
+    }
+  }
+
+  async function _updateRoute(driverLat, driverLng, clientLat, clientLng) {
+    try {
+      const url = `https://router.project-osrm.org/route/v1/driving/${driverLng},${driverLat};${clientLng},${clientLat}?overview=full&geometries=geojson`;
+      const r = await fetch(url);
+      const d = await r.json();
+      const coords = d.routes?.[0]?.geometry?.coordinates;
+      if (!coords) return;
+      const latlngs = coords.map(c => [c[1], c[0]]);
+      if (_routeLine) _trackMap.removeLayer(_routeLine);
+      _routeLine = L.polyline(latlngs, { color: "#f7b500", weight: 4, opacity: 0.8 }).addTo(_trackMap);
+
+      // ETA
+      const dur = d.routes[0].duration;
+      const min = Math.ceil(dur / 60);
+      document.getElementById("trackEtaValue").textContent = min < 60 ? `~${min} min` : `~${Math.floor(min/60)}h${String(min%60).padStart(2,"0")}min`;
+
+      _trackMap.fitBounds(_routeLine.getBounds(), { padding: [30,30] });
+    } catch (_) {}
+  }
+
+  function _initMap(clientLat, clientLng) {
+    if (_trackMap) { _trackMap.remove(); _trackMap = null; }
+
+    _trackMap = L.map("trackMap", { zoomControl: false, attributionControl: false });
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(_trackMap);
+    L.control.zoom({ position: "bottomright" }).addTo(_trackMap);
+
+    const clientIcon = L.divIcon({
+      html: `<div style="background:#f7b500;width:18px;height:18px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.35)"></div>`,
+      iconSize: [18,18], iconAnchor: [9,9], className: ""
+    });
+    _clientMarker = L.marker([clientLat, clientLng], { icon: clientIcon })
+      .addTo(_trackMap)
+      .bindPopup("Você está aqui");
+    _trackMap.setView([clientLat, clientLng], 15);
+  }
+
+  function _updateDriverMarker(lat, lng, clientLat, clientLng) {
+    const driverIcon = L.divIcon({
+      html: `<div style="background:#111;width:22px;height:22px;border-radius:50%;border:3px solid #f7b500;box-shadow:0 2px 8px rgba(0,0,0,.5);display:grid;place-items:center;font-size:12px">🚗</div>`,
+      iconSize: [22,22], iconAnchor: [11,11], className: ""
+    });
+    if (!_driverMarker) {
+      _driverMarker = L.marker([lat, lng], { icon: driverIcon }).addTo(_trackMap).bindPopup("Parceiro");
+    } else {
+      _driverMarker.setLatLng([lat, lng]);
+    }
+    if (clientLat && clientLng) _updateRoute(lat, lng, clientLat, clientLng);
+  }
+
+  function showTrackCard(osNumber, phone, requeteId, originLat, originLng) {
     document.getElementById("formSection").style.display = "none";
     document.getElementById("trackCard").classList.add("show");
     document.getElementById("trackOsNum").textContent = osNumber ? "OS #" + osNumber : "OS registrada";
 
     const msg = encodeURIComponent(
       osNumber
-        ? "Olá, acabei de abrir a OS #" + osNumber + " pelo SouFind. Gostaria de acompanhar o atendimento."
+        ? `Olá, acabei de abrir a OS #${osNumber} pelo SouFind. Gostaria de acompanhar o atendimento.`
         : "Olá, acabei de solicitar socorro pelo SouFind. Gostaria de acompanhar o atendimento."
     );
     document.getElementById("btnWpp").onclick = () => {
       window.open("https://wa.me/" + wppCentral + "?text=" + msg, "_blank");
     };
+
+    // Estado inicial
+    setTrackStep("new");
+
+    // Mapa com pin do cliente
+    const cLat = parseFloat(originLat);
+    const cLng = parseFloat(originLng);
+    const hasCoords = !isNaN(cLat) && !isNaN(cLng) && cLat !== 0 && cLng !== 0;
+    if (hasCoords) {
+      setTimeout(() => _initMap(cLat, cLng), 100);
+    } else {
+      document.getElementById("trackMap").style.display = "none";
+    }
+
+    // Pusher — tracking em tempo real
+    if (!requeteId) return;
+    if (_pusher) { _pusher.disconnect(); _pusher = null; }
+
+    _pusher = new Pusher("1e4f626ce3bf9b185204", { cluster: "us2" });
+
+    const rideCh = _pusher.subscribe("ride." + requeteId);
+    rideCh.bind_global((event, data) => {
+      if (event.startsWith("pusher:")) return;
+      const d = typeof data === "string" ? JSON.parse(data) : data;
+      const status = d?.statut || d?.status || d?.data?.statut;
+      if (!status) return;
+
+      setTrackStep(status);
+
+      // Se confirmado: pega driver_id e rastreia localização
+      const driverId = d?.conducteur_id || d?.driver_id || d?.data?.conducteur_id;
+      if ((status === "confirmed" || status === "on ride") && driverId) {
+        if (_driverChannel) _driverChannel.unbind_all();
+        _driverChannel = _pusher.subscribe("driver." + driverId);
+        _driverChannel.bind("updated", (dData) => {
+          const dd = typeof dData === "string" ? JSON.parse(dData) : dData;
+          const dLat = parseFloat(dd?.data?.latitude || dd?.latitude);
+          const dLng = parseFloat(dd?.data?.longitude || dd?.longitude);
+          if (!isNaN(dLat) && !isNaN(dLng) && hasCoords) {
+            _updateDriverMarker(dLat, dLng, cLat, cLng);
+          }
+        });
+      }
+
+      if (status === "completed" || status === "canceled" || status === "rejected") {
+        if (_driverChannel) { _driverChannel.unbind_all(); _driverChannel = null; }
+      }
+    });
   }
 
   document.getElementById("btnNewOs").addEventListener("click", () => {
@@ -570,5 +766,7 @@
     }
   });
 </script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 </body>
 </html>
