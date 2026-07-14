@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SouFind | Demo ao Vivo</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --y:#f7b500;--g:#22c55e;
+  --bg:#09090b;--s:rgba(9,9,11,0.88);--b:rgba(255,255,255,0.08);
+  --w:#e8eaf0;--dim:#5a6272;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);
+  color:var(--w);font-family:system-ui,-apple-system,'Segoe UI',sans-serif}
+
+.bar{position:fixed;top:0;left:0;right:0;height:52px;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;padding:0 20px;
+  background:rgba(6,7,9,0.85);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--b)}
+.brand{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:800;letter-spacing:-.03em}
+.badge{width:32px;height:32px;border-radius:9px;background:var(--y);color:#090909;
+  display:grid;place-items:center;font-size:16px;font-weight:900}
+.pill{background:rgba(247,181,0,.1);border:1px solid rgba(247,181,0,.28);
+  color:var(--y);font-size:10px;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;padding:4px 10px;border-radius:20px}
+
+#map{position:fixed;inset:0;top:52px;z-index:0}
+#rc{position:fixed;inset:0;top:52px;z-index:5;pointer-events:none}
+
+/* ── partner markers ── */
+.pm{width:38px;height:38px;border-radius:50%;
+  background:rgba(16,18,26,0.95);border:2px solid rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+  box-shadow:0 2px 16px rgba(0,0,0,.6);
+  transition:border-color .35s,background .35s,box-shadow .35s,transform .35s;
+  cursor:default;position:relative}
+.pm.hit{border-color:rgba(247,181,0,.7);background:rgba(247,181,0,.1);
+  box-shadow:0 0 20px rgba(247,181,0,.4);transform:scale(1.15)}
+.pm.acc{border-color:var(--g);background:rgba(34,197,94,.15);
+  box-shadow:0 0 24px rgba(34,197,94,.5);transform:scale(1.25)}
+.pm-badge{position:absolute;top:-7px;right:-7px;width:16px;height:16px;
+  border-radius:50%;background:var(--g);display:none;
+  align-items:center;justify-content:center;font-size:9px;font-weight:800}
+.pm.acc .pm-badge{display:flex}
+.pm-label{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);
+  font-size:10px;font-weight:600;color:var(--dim);white-space:nowrap;
+  background:rgba(9,9,11,.75);padding:2px 6px;border-radius:6px;
+  transition:color .3s}
+.pm.hit .pm-label{color:var(--y)}
+.pm.acc .pm-label{color:var(--g)}
+
+/* ── client pin ── */
+.cpin{width:16px;height:16px;border-radius:50%;background:var(--y);
+  box-shadow:0 0 0 4px rgba(247,181,0,.25),0 0 0 8px rgba(247,181,0,.1)}
+
+/* ── stats ── */
+.stats{position:fixed;top:64px;right:16px;z-index:100;
+  display:flex;flex-direction:column;gap:8px}
+.sp{display:flex;align-items:center;gap:8px;
+  background:var(--s);backdrop-filter:blur(16px);border:1px solid var(--b);
+  border-radius:12px;padding:8px 13px;font-size:11px;font-weight:700}
+.sd{width:7px;height:7px;border-radius:50%}
+.sd.g{background:var(--g);box-shadow:0 0 6px var(--g);animation:blink 2s ease-in-out infinite}
+.sd.y{background:var(--y)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+@media(max-width:520px){.stats{display:none}}
+
+/* ── status card ── */
+.card{position:fixed;bottom:24px;left:18px;z-index:100;
+  width:min(340px,calc(100vw - 36px));
+  background:var(--s);backdrop-filter:blur(22px);
+  border:1px solid var(--b);border-radius:20px;padding:18px 20px;
+  box-shadow:0 8px 48px rgba(0,0,0,.7)}
+.ostype{display:inline-flex;align-items:center;gap:6px;
+  background:rgba(247,181,0,.1);border:1px solid rgba(247,181,0,.2);
+  border-radius:20px;padding:3px 10px 3px 7px;
+  font-size:11px;font-weight:700;color:var(--y);margin-bottom:12px}
+.clabel{font-size:10px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:9px}
+.ctitle{font-size:17px;font-weight:800;min-height:26px;margin-bottom:4px}
+.csub{font-size:12px;color:var(--dim);min-height:16px;margin-bottom:14px}
+.progress{display:flex;gap:5px;margin-bottom:16px}
+.dot{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.08);transition:background .5s}
+.dot.on{background:var(--y)}
+.dot.pulse{background:var(--y);animation:dp .9s ease-in-out infinite}
+@keyframes dp{0%,100%{opacity:.4}50%{opacity:1}}
+.drow{display:flex;align-items:center;gap:12px;
+  opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s}
+.drow.show{opacity:1;transform:translateY(0)}
+.dav{width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,#1e2535,#161c2a);
+  border:2px solid rgba(255,255,255,.1);
+  display:grid;place-items:center;font-size:20px;flex-shrink:0}
+.dinfo{flex:1}.dname{font-size:14px;font-weight:700}
+.dveh{font-size:11px;color:var(--dim);margin-top:1px}
+.deta{text-align:right;flex-shrink:0}
+.detav{font-size:20px;font-weight:800;color:var(--y)}
+.detal{font-size:10px;color:var(--dim)}
+.spin{display:inline-block;width:16px;height:16px;
+  border:2px solid rgba(255,255,255,.15);border-top-color:var(--y);
+  border-radius:50%;animation:spin .7s linear infinite;
+  vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="brand"><div class="badge">S</div>SouFind</div>
+  <div class="pill">Demo ao vivo</div>
+</div>
+
+<div id="map"></div>
+<canvas id="rc"></canvas>
+
+<div class="stats">
+  <div class="sp"><div class="sd g"></div>24 parceiros online</div>
+  <div class="sp"><div class="sd y"></div>~2 min resposta média</div>
+  <div class="sp">📋 147 OS hoje</div>
+</div>
+
+<div class="card">
+  <div class="ostype" id="osType">🚛 Guincho leve</div>
+  <div class="clabel">Atendimento em andamento</div>
+  <div class="ctitle" id="ct"><span class="spin"></span> Localizando parceiros...</div>
+  <div class="csub" id="cs">Av. Paulista, 1000 · São Paulo — SP</div>
+  <div class="progress">
+    <div class="dot" id="d0"></div><div class="dot" id="d1"></div>
+    <div class="dot" id="d2"></div><div class="dot" id="d3"></div><div class="dot" id="d4"></div>
+  </div>
+  <div class="drow" id="dr">
+    <div class="dav">👨‍🔧</div>
+    <div class="dinfo">
+      <div class="dname" id="dn">João S.</div>
+      <div class="dveh" id="dv">Gol Plus 2023 · ⭐ 4.9</div>
+    </div>
+    <div class="deta">
+      <div class="detav" id="de">8 min</div>
+      <div class="detal">estimado</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ── Centro e parceiros (Av. Paulista, SP) ──
+  const CENTER = [-23.5611, -46.6565];
+  const PS = [
+    {name:"João S.",    veh:"Gol Plus 2023",  rat:"4.9",eta:"8 min", dist:"1.2km",em:"🚗",ll:[-23.5548,-46.6478]},
+    {name:"Carlos M.", veh:"Saveiro 2021",    rat:"4.7",eta:"13min", dist:"2.1km",em:"🛻",ll:[-23.5695,-46.6493]},
+    {name:"Rafael T.", veh:"Fiorino 2022",    rat:"4.8",eta:"16min", dist:"2.5km",em:"🚐",ll:[-23.5740,-46.6580]},
+    {name:"Paulo R.",  veh:"Kombi Truck",     rat:"4.5",eta:"19min", dist:"3.0km",em:"🚚",ll:[-23.5630,-46.6780]},
+    {name:"André F.",  veh:"Gol 2022",        rat:"4.6",eta:"10min", dist:"1.6km",em:"🚗",ll:[-23.5565,-46.6660]},
+    {name:"Marcos V.", veh:"Uno 2019",        rat:"4.4",eta:"17min", dist:"2.8km",em:"🚙",ll:[-23.5490,-46.6420]},
+    {name:"Felipe B.", veh:"Saveiro 2023",    rat:"4.8",eta:"12min", dist:"1.9km",em:"🛻",ll:[-23.5672,-46.6390]},
+    {name:"Lucas P.",  veh:"S10 2021",        rat:"4.9",eta:"7 min", dist:"1.0km",em:"🚙",ll:[-23.5530,-46.6610]},
+  ];
+  const ACC = 0;
+  const OS_TYPES = ['🚛 Guincho leve','⚡ Pane elétrica','🔋 Bateria','🔧 Pane mecânica','🔑 Chaveiro','⛽ Combustível'];
+  const ADDRS = [
+    'Av. Paulista, 1000 · São Paulo','Rua Augusta, 500 · Consolação',
+    'Av. Faria Lima, 2000 · Itaim Bibi','Av. Rebouças, 800 · Pinheiros',
+    'Al. Santos, 700 · Jardins',
+  ];
+
+  // ── Mapa ──
+  const map = L.map('map', {
+    center: CENTER, zoom: 14,
+    zoomControl: false, attributionControl: true
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap © CARTO',
+    maxZoom: 19
+  }).addTo(map);
+
+  L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+  // ── Client marker ──
+  const cIcon = L.divIcon({
+    html: '<div class="cpin"></div>',
+    iconSize: [16,16], iconAnchor: [8,8], className: ''
+  });
+  L.marker(CENTER, { icon: cIcon }).addTo(map);
+
+  // ── Partner markers ──
+  const pEls = [];
+  const pMarkers = PS.map((p, i) => {
+    const wrap = document.createElement('div');
+    wrap.style.position = 'relative';
+    wrap.innerHTML = `<div class="pm" id="pm${i}">${p.em}<div class="pm-badge">✓</div></div><div class="pm-label" id="pl${i}">${p.dist}</div>`;
+    const icon = L.divIcon({ html: wrap, iconSize:[38,38], iconAnchor:[19,19], className:'' });
+    const mk = L.marker(p.ll, { icon }).addTo(map);
+    pEls.push(document.getElementById('pm'+i));
+    return mk;
+  });
+
+  // ── Radar canvas ──
+  const rc = document.getElementById('rc');
+  const rx = rc.getContext('2d');
+  let waves = [], radarOn = false, raf = null;
+
+  function resizeCanvas() {
+    rc.width  = window.innerWidth;
+    rc.height = window.innerHeight - 52;
+    rc.style.top = '52px';
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  function clientPx() {
+    const p = map.latLngToContainerPoint(CENTER);
+    return { x: p.x, y: p.y };
+  }
+  function partnerPx(i) {
+    const p = map.latLngToContainerPoint(PS[i].ll);
+    return { x: p.x, y: p.y };
+  }
+
+  function startRadar() {
+    radarOn = true; waves = [];
+    function loop(ts) {
+      if (!radarOn) { rx.clearRect(0,0,rc.width,rc.height); return; }
+      if (!loop.t || ts - loop.t > 1400) { waves.push({ b: ts }); loop.t = ts; }
+      const cp = clientPx();
+      const maxR = Math.sqrt(rc.width * rc.width + rc.height * rc.height);
+      rx.clearRect(0, 0, rc.width, rc.height);
+      waves = waves.filter(w => {
+        const r = (ts - w.b) / 1000 * 100;
+        if (r > maxR) return false;
+        const a = r > maxR * .85 ? .65 * (1 - (r - maxR*.85)/(maxR*.15)) : .65;
+        rx.beginPath(); rx.arc(cp.x, cp.y, r, 0, Math.PI*2);
+        rx.strokeStyle = `rgba(247,181,0,${Math.max(0,a).toFixed(3)})`;
+        rx.lineWidth = 1.5; rx.stroke();
+        PS.forEach((_, i) => {
+          if (w['h'+i]) return;
+          const pp = partnerPx(i);
+          const d = Math.sqrt((pp.x-cp.x)**2 + (pp.y-cp.y)**2);
+          if (r >= d && r < d + 35) {
+            w['h'+i] = true;
+            const el = pEls[i];
+            if (el && !el.classList.contains('acc')) {
+              el.classList.add('hit');
+              setTimeout(() => { if (el && !el.classList.contains('acc')) el.classList.remove('hit'); }, 700);
+            }
+          }
+        });
+        return true;
+      });
+      raf = requestAnimationFrame(loop);
+    }
+    raf = requestAnimationFrame(loop);
+  }
+  function stopRadar() {
+    radarOn = false; if (raf) cancelAnimationFrame(raf);
+    rx.clearRect(0, 0, rc.width, rc.height);
+  }
+
+  // ── Status flow ──
+  const ct=document.getElementById('ct'), cs=document.getElementById('cs');
+  const dr=document.getElementById('dr'), dn=document.getElementById('dn');
+  const dv=document.getElementById('dv'), de=document.getElementById('de');
+  const osType=document.getElementById('osType');
+  function d(i){return document.getElementById('d'+i)}
+  function setDots(n,all){for(let i=0;i<5;i++){const el=d(i);el.className='dot';if(all||i<n)el.classList.add('on');else if(i===n)el.classList.add('pulse')}}
+
+  let ptimer=null;
+  const PHASES=[
+    {dur:3000,fn(){
+      osType.textContent = OS_TYPES[Math.floor(Math.random()*OS_TYPES.length)];
+      cs.textContent = ADDRS[Math.floor(Math.random()*ADDRS.length)];
+      ct.innerHTML='<span class="spin"></span> Localizando parceiros...';
+      setDots(0); dr.classList.remove('show');
+      pEls.forEach(el=>el.classList.remove('hit','acc'));
+      startRadar();
+    }},
+    {dur:2000,fn(){
+      ct.textContent='🔍 '+PS.length+' parceiros disponíveis';
+      cs.textContent='Selecionando o mais próximo...';
+      setDots(2);
+    }},
+    {dur:1600,fn(){
+      ct.textContent='📨 Solicitação enviada';
+      cs.textContent='Aguardando confirmação do parceiro...';
+      setDots(3);
+    }},
+    {dur:2000,fn(){
+      const p=PS[ACC];
+      ct.innerHTML='✅ Parceiro confirmado!';
+      cs.textContent=p.name+' aceitou o chamado';
+      setDots(4,true);
+      const el=pEls[ACC];
+      if(el){el.classList.remove('hit');el.classList.add('acc')}
+      dn.textContent=p.name; dv.textContent=p.veh+' · ⭐ '+p.rat;
+      de.textContent=p.eta; dr.classList.add('show');
+      stopRadar();
+    }},
+    {dur:4500,fn(){
+      ct.innerHTML='🚗 Parceiro a caminho';
+      cs.textContent='Acompanhe pelo link enviado no WhatsApp';
+      setDots(4,true);
+    }},
+  ];
+  let ph=0;
+  function runPhase(i){ph=i%PHASES.length;PHASES[ph].fn();ptimer=setTimeout(()=>runPhase(ph+1),PHASES[ph].dur)}
+
+  map.on('load moveend zoomend', () => { /* canvas auto-updates */ });
+  runPhase(0);
+})();
+</script>
+</body>
+</html>
