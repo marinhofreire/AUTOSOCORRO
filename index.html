@@ -227,12 +227,14 @@
           <label class="block">Placa
             <input type="text" id="vehiclePlate" name="vehiclePlate" placeholder="ABC1D23" />
           </label>
-          <label class="block">Foto opcional
-            <input type="file" id="photo" accept="image/*" />
+          <label class="block">Descreva a situação
+            <textarea id="note" name="note" placeholder="Ex: carro no acostamento, motor fumando, pneu traseiro direito furado..." style="min-height:80px"></textarea>
           </label>
-          <label class="block">Observação
-            <textarea id="note" name="note" placeholder="Descreva algo importante para o atendimento"></textarea>
+          <label class="block" style="margin-top:14px">
+            <span>Fotos da situação <span style="font-weight:400;color:#888">(até 4 fotos)</span></span>
+            <input type="file" id="photos" accept="image/*" multiple style="margin-top:8px" />
           </label>
+          <div id="photo-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"></div>
           <div class="actions">
             <button type="button" class="ghost" data-back>← Voltar</button>
             <button type="button" id="submitBtn">Solicitar socorro</button>
@@ -502,13 +504,23 @@
   });
 
   // ── Foto ─────────────────────────────────────────────────────────────────────
-  let photoBase64 = null;
-  document.getElementById("photo").addEventListener("change", (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (!file) { photoBase64 = null; return; }
-    const reader = new FileReader();
-    reader.onload = () => { photoBase64 = reader.result || null; };
-    reader.readAsDataURL(file);
+  let photosBase64 = [];
+  document.getElementById("photos").addEventListener("change", (e) => {
+    const files = Array.from(e.target.files || []).slice(0, 4);
+    const preview = document.getElementById("photo-preview");
+    preview.innerHTML = "";
+    photosBase64 = [];
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        photosBase64.push(ev.target.result);
+        const img = document.createElement("img");
+        img.src = ev.target.result;
+        img.style.cssText = "width:72px;height:72px;object-fit:cover;border-radius:10px;border:2px solid #e0e0e0";
+        preview.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
   });
 
   // ── Envio ────────────────────────────────────────────────────────────────────
@@ -534,7 +546,8 @@
       destinationLat: val("destinationLat"),
       destinationLng: val("destinationLng"),
       note: val("note"),
-      photo: photoBase64
+      photo: photosBase64[0] || null,
+      photos: photosBase64
     };
 
     let bookingNumber = null;
@@ -765,7 +778,8 @@
     document.getElementById("formSection").style.display = "block";
     // limpa formulário SEM resetar a página
     document.getElementById("publicRescueForm").reset();
-    photoBase64 = null;
+    photosBase64 = [];
+    document.getElementById("photo-preview").innerHTML = "";
     document.getElementById("originLat").value = "";
     document.getElementById("originLng").value = "";
     document.getElementById("destinationLat").value = "";
