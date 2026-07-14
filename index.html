@@ -325,7 +325,7 @@
 
 <script>
   const params = new URLSearchParams(window.location.search);
-  const bridgeApiBase = params.get("bridgeBase") || "https://bridge.mackflow.com.br";
+  const bridgeApiBase = params.get("bridgeBase") || "https://bridge.soufind.com.br";
   const tenant = params.get("tenant") || "DEMO01";
   const demoMode = params.get("demo") === "1";
   const wppCentral = params.get("wpp") || "5511999999999";
@@ -729,6 +729,36 @@
       }
     });
   }
+
+  // ── Auto-tracking: se ?os= na URL, abrir tela de acompanhamento ────────────
+  (function() {
+    var osParam = params.get("os");
+    if (!osParam) return;
+
+    document.getElementById("formSection").style.display = "none";
+    document.getElementById("trackCard").classList.add("show");
+    document.getElementById("trackOsNum").textContent = "Carregando...";
+    document.getElementById("trackMap").style.display = "none";
+
+    fetch(bridgeApiBase.replace(/\/$/, "") + "/api/bridge/os/by-external/" + encodeURIComponent(osParam))
+      .then(function(r) { return r.json(); })
+      .then(function(resp) {
+        if (!resp.ok || !resp.os) throw new Error("not_found");
+        var os = resp.os;
+        var osNumClean = (os.booking_number || "").replace(/^#/, "");
+        var cLat = os.latitude_depart || "0";
+        var cLng = os.longitude_depart || "0";
+        if (cLat !== "0") document.getElementById("trackMap").style.display = "";
+        showTrackCard(osNumClean, os.customerPhone || "", osNumClean, cLat, cLng);
+        document.getElementById("trackOsNum").textContent = os.booking_number || ("OS " + osParam);
+        var statut = os.statut || "new";
+        setTrackStep(statut === "os_created" ? "new" : statut);
+      })
+      .catch(function() {
+        document.getElementById("trackOsNum").textContent = "OS não encontrada";
+        setTrackStep("canceled");
+      });
+  })();
 
   document.getElementById("btnNewOs").addEventListener("click", () => {
     document.getElementById("trackCard").classList.remove("show");
