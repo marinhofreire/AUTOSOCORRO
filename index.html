@@ -130,6 +130,28 @@
       .service-grid { grid-template-columns: 1fr; }
       .actions { flex-direction: column; }
     }
+
+    /* Login gate */
+    .login-gate { margin-top: 16px; }
+    .login-gate .card { margin-top: 0; }
+    .login-title { font-size: 17px; font-weight: 800; color: var(--sf-black); margin-bottom: 6px; }
+    .login-sub { font-size: 13px; color: #666; margin-bottom: 18px; line-height: 1.5; }
+    .login-field { margin-bottom: 12px; }
+    .login-field label { display: block; font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 5px; }
+    .login-field input { width: 100%; padding: 13px 14px; border-radius: 12px; border: 1.5px solid #e0e0e0; font-size: 15px; background: #fafafa; outline: none; transition: border-color .2s; }
+    .login-field input:focus { border-color: var(--sf-yellow); background: #fff; }
+    .login-msg { font-size: 13px; color: var(--sf-danger); text-align: center; min-height: 20px; margin-top: 8px; }
+    .login-divider { text-align: center; color: #bbb; font-size: 12px; margin: 16px 0; display: flex; align-items: center; gap: 10px; }
+    .login-divider::before, .login-divider::after { content: ""; flex: 1; height: 1px; background: #e0e0e0; }
+    .btn-cadastro { width: 100%; padding: 13px; border-radius: 12px; border: 1.5px solid #e0e0e0; background: transparent; font-size: 14px; font-weight: 700; color: #333; cursor: pointer; transition: border-color .2s, background .2s; }
+    .btn-cadastro:hover { border-color: var(--sf-yellow); background: #fffae6; }
+
+    /* User bar (logged in) */
+    .user-bar { display: none; align-items: center; justify-content: space-between; padding: 9px 14px; background: rgba(255,255,255,0.15); border-radius: 12px; margin-top: 12px; }
+    .user-bar.show { display: flex; }
+    .user-bar-name { color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 700; }
+    .user-bar-logout { color: rgba(255,255,255,0.55); font-size: 12px; cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; font: inherit; }
+    .user-bar-logout:hover { color: #fff; }
   </style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
@@ -141,9 +163,33 @@
       <span>SouFind</span>
     </div>
     <p>Abra seu pedido de socorro em poucos passos. Nossa central recebe os dados e aciona o parceiro mais próximo.</p>
+    <div class="user-bar" id="userBar">
+      <span class="user-bar-name" id="userBarName"></span>
+      <button class="user-bar-logout" onclick="doLogout()">Sair</button>
+    </div>
   </section>
 
-  <section class="card">
+  <!-- LOGIN GATE -->
+  <div class="login-gate" id="loginGate" style="display:none">
+    <div class="card">
+      <div class="login-title">Entrar na sua conta</div>
+      <div class="login-sub">Acesse para solicitar socorro rapidamente. Seus dados ficam salvos.</div>
+      <div class="login-field">
+        <label>E-mail</label>
+        <input id="lg-email" type="email" placeholder="seu@email.com" inputmode="email" autocomplete="email" />
+      </div>
+      <div class="login-field">
+        <label>Senha</label>
+        <input id="lg-senha" type="password" placeholder="Sua senha" autocomplete="current-password" />
+      </div>
+      <div class="login-msg" id="lg-msg"></div>
+      <button class="btn btn-primary" onclick="doLogin()" id="lg-btn" style="width:100%;padding:14px;border-radius:12px;border:none;background:var(--sf-yellow);color:var(--sf-black);font-size:16px;font-weight:800;cursor:pointer;margin-top:4px">Entrar →</button>
+      <div class="login-divider">ou</div>
+      <button class="btn-cadastro" onclick="window.location.href='/cadastro'">Criar conta gratuita</button>
+    </div>
+  </div>
+
+  <section class="card" id="mainCard">
 
     <!-- FORMULÁRIO -->
     <div id="formSection">
@@ -326,6 +372,77 @@
 </div>
 
 <script>
+  // ── Auth ─────────────────────────────────────────────────────────────────────
+  var BRIDGE_LOGIN = "https://bridge.soufind.com.br/api/bridge/cliente-login";
+  var SF_USER_KEY  = "sf_user";
+
+  function getSfUser() {
+    try { return JSON.parse(localStorage.getItem(SF_USER_KEY)); } catch { return null; }
+  }
+  function setSfUser(u) { localStorage.setItem(SF_USER_KEY, JSON.stringify(u)); }
+  function clearSfUser() { localStorage.removeItem(SF_USER_KEY); }
+
+  function showAuthGate() {
+    document.getElementById("loginGate").style.display = "block";
+    document.getElementById("mainCard").style.display = "none";
+    document.getElementById("userBar").classList.remove("show");
+  }
+  function showMainApp(user) {
+    document.getElementById("loginGate").style.display = "none";
+    document.getElementById("mainCard").style.display = "block";
+    var bar = document.getElementById("userBar");
+    bar.classList.add("show");
+    document.getElementById("userBarName").textContent = "Olá, " + (user.name || user.email || "cliente");
+    if (user.name) document.getElementById("customerName").value = user.name;
+    if (user.phone) document.getElementById("customerPhone").value = user.phone;
+  }
+
+  async function doLogin() {
+    var email = document.getElementById("lg-email").value.trim();
+    var senha = document.getElementById("lg-senha").value.trim();
+    var msg   = document.getElementById("lg-msg");
+    var btn   = document.getElementById("lg-btn");
+    if (!email || !senha) { msg.textContent = "Preencha e-mail e senha."; return; }
+    btn.disabled = true;
+    btn.textContent = "Entrando...";
+    msg.textContent = "";
+    try {
+      var r = await fetch(BRIDGE_LOGIN, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email, password: senha })
+      });
+      var d = await r.json();
+      if (!r.ok || !d.ok) { msg.textContent = d.message || "E-mail ou senha incorretos."; return; }
+      setSfUser({ token: d.token, name: d.user && d.user.name ? d.user.name : null, email: d.user && d.user.email ? d.user.email : email, phone: d.user && d.user.phone ? d.user.phone : null });
+      showMainApp(getSfUser());
+    } catch (e) {
+      msg.textContent = "Erro de conexão. Tente novamente.";
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Entrar →";
+    }
+  }
+
+  document.getElementById("lg-senha").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") doLogin();
+  });
+
+  function doLogout() {
+    clearSfUser();
+    showAuthGate();
+    document.getElementById("lg-email").value = "";
+    document.getElementById("lg-senha").value = "";
+    document.getElementById("lg-msg").textContent = "";
+  }
+
+  (function initAuth() {
+    var user = getSfUser();
+    if (user && user.token) { showMainApp(user); }
+    else { showAuthGate(); }
+  })();
+
+  // ── Config ────────────────────────────────────────────────────────────────────
   const params = new URLSearchParams(window.location.search);
   const bridgeApiBase = params.get("bridgeBase") || "https://bridge.soufind.com.br";
   const tenant = params.get("tenant") || "DEMO01";
