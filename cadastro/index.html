@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SouFind | Cadastro</title>
   <style>
-    /* ── CONFIG ─────────────────────────────── */
-    /* Para alterar: edite apenas este bloco     */
-
-    /* ── DESIGN TOKENS ── */
     :root {
       --sf-black: #090909;
       --sf-yellow: #f7b500;
@@ -31,7 +27,6 @@
     }
     .wrap { width: min(100%, 560px); margin: 0 auto; padding: 24px 16px 56px; }
 
-    /* ── HERO ── */
     .hero {
       background: var(--sf-black); color: var(--sf-white);
       border-radius: 24px; padding: 22px 20px 20px;
@@ -46,21 +41,16 @@
     }
     .hero-sub { margin-top: 12px; color: rgba(255,255,255,0.75); font-size: 14px; line-height: 1.5; }
 
-    /* ── STEPS ── */
-    .steps {
-      display: flex; gap: 6px; margin: 18px 0 0;
-      counter-reset: step;
-    }
+    .steps { display: flex; gap: 6px; margin: 18px 0 0; }
     .step {
       flex: 1; padding: 8px 4px; border-radius: 12px;
       background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.4);
-      font-size: 11px; font-weight: 700; text-align: center; cursor: default;
+      font-size: 11px; font-weight: 700; text-align: center;
       transition: background .2s, color .2s;
     }
     .step.active { background: var(--sf-yellow); color: var(--sf-black); }
-    .step.done { background: rgba(19,138,75,0.25); color: #6ee7b7; }
+    .step.done   { background: rgba(19,138,75,0.25); color: #6ee7b7; }
 
-    /* ── CARD ── */
     .card {
       margin-top: 16px; background: #fff;
       border-radius: 24px; padding: 20px 18px;
@@ -70,7 +60,6 @@
     .panel.active { display: block; }
     .panel-title { font-size: 17px; font-weight: 800; margin-bottom: 16px; color: var(--sf-black); }
 
-    /* ── FORM ── */
     .field { margin-bottom: 14px; }
     .field label { display: block; font-size: 12px; font-weight: 700; color: var(--sf-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .4px; }
     .field input, .field select {
@@ -80,102 +69,50 @@
       outline: none; transition: border-color .2s;
     }
     .field input:focus, .field select:focus { border-color: var(--sf-yellow); background: #fff; }
-    .field .hint { font-size: 11px; color: #999; margin-top: 4px; }
     .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-    /* ── PLANOS ── */
-    .planos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
-    .plano-card {
-      border: 2px solid #e0e0e0; border-radius: 16px; padding: 14px 12px;
-      cursor: pointer; transition: border-color .2s, background .2s; text-align: center;
-      position: relative;
+    .incluso-box {
+      background: #f8fdf9; border: 1.5px solid #bbf7d0; border-radius: 14px;
+      padding: 14px; margin-bottom: 16px;
     }
-    .plano-card:hover { border-color: var(--sf-yellow); }
-    .plano-card.selected { border-color: var(--sf-yellow); background: #fffbe6; }
-    .plano-card .plano-nome { font-size: 13px; font-weight: 700; color: var(--sf-muted); margin-bottom: 4px; }
-    .plano-card .plano-valor { font-size: 24px; font-weight: 900; color: var(--sf-black); }
-    .plano-card .plano-periodo { font-size: 11px; color: var(--sf-muted); }
-    .plano-card .plano-economia {
-      position: absolute; top: -8px; right: 8px;
-      background: var(--sf-yellow); color: var(--sf-black);
-      font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 20px;
-    }
-    .plano-check {
-      width: 20px; height: 20px; border-radius: 50%; border: 2px solid #ccc;
-      margin: 8px auto 0; display: grid; place-items: center; transition: all .2s;
-    }
-    .plano-card.selected .plano-check { background: var(--sf-yellow); border-color: var(--sf-yellow); }
-    .plano-card.selected .plano-check::after { content: '✓'; font-size: 12px; font-weight: 900; color: #000; }
+    .incluso-titulo { font-size: 12px; font-weight: 700; color: #166534; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 8px; }
+    .incluso-item { font-size: 13px; color: #15803d; padding: 3px 0; display: flex; gap: 6px; align-items: flex-start; }
+    .incluso-item::before { content: '✓'; font-weight: 700; flex-shrink: 0; }
 
-    /* ── PIX ── */
-    .pix-box {
-      background: #f0faf5; border: 1.5px solid #6ee7b7; border-radius: 16px;
-      padding: 18px; text-align: center; margin-bottom: 16px;
-    }
-    .pix-logo { font-size: 28px; margin-bottom: 6px; }
-    .pix-title { font-size: 13px; font-weight: 700; color: #065f46; margin-bottom: 10px; }
-    .pix-valor { font-size: 28px; font-weight: 900; color: #065f46; margin-bottom: 10px; }
-    .pix-key-label { font-size: 11px; color: #999; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 4px; }
-    .pix-key {
-      background: #fff; border: 1.5px solid #6ee7b7; border-radius: 10px;
-      padding: 10px 14px; font-size: 14px; font-weight: 600; color: #065f46;
-      display: flex; align-items: center; justify-content: space-between; gap: 8px;
-    }
-    .pix-copy {
-      background: #065f46; color: #fff; border: none; border-radius: 8px;
-      padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;
-      white-space: nowrap; transition: opacity .15s;
-    }
-    .pix-copy:active { opacity: .75; }
-    .pix-hint { font-size: 12px; color: #059669; margin-top: 10px; }
-
-    /* ── BOTÕES ── */
     .btn {
       width: 100%; padding: 15px; border-radius: 14px; border: none;
       font-size: 16px; font-weight: 800; cursor: pointer; transition: opacity .15s;
       display: flex; align-items: center; justify-content: center; gap: 8px;
     }
     .btn:active { opacity: .8; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
     .btn-primary { background: var(--sf-yellow); color: var(--sf-black); }
     .btn-outline { background: transparent; border: 2px solid #e0e0e0; color: var(--sf-muted); font-size: 14px; padding: 12px; margin-top: 8px; }
-    .btn-whatsapp { background: #25d366; color: #fff; margin-top: 12px; }
-    .btn:disabled { opacity: .5; cursor: not-allowed; }
 
-    /* ── MSG ── */
     .msg { min-height: 20px; font-size: 13px; margin-top: 10px; text-align: center; }
     .msg.error { color: var(--sf-danger); }
-    .msg.success { color: var(--sf-success); }
 
-    /* ── SUCESSO ── */
     .success-screen { text-align: center; padding: 10px 0; }
     .success-icon { font-size: 56px; margin-bottom: 12px; }
     .success-title { font-size: 22px; font-weight: 900; color: var(--sf-black); margin-bottom: 8px; }
-    .success-text { font-size: 14px; color: var(--sf-muted); line-height: 1.5; margin-bottom: 20px; }
-
-    /* ── INCLUSOS ── */
-    .inclusos { margin-top: 12px; padding: 14px; background: #fafafa; border-radius: 14px; }
-    .inclusos-title { font-size: 12px; font-weight: 700; color: var(--sf-muted); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 8px; }
-    .incluso { font-size: 13px; color: #333; padding: 3px 0; display: flex; gap: 6px; }
-    .incluso::before { content: '✓'; color: var(--sf-success); font-weight: 700; }
+    .success-text { font-size: 14px; color: var(--sf-muted); line-height: 1.6; margin-bottom: 20px; }
+    .btn-whatsapp { background: #25d366; color: #fff; margin-top: 12px; width: 100%; padding: 15px; border-radius: 14px; border: none; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
   </style>
 </head>
 <body>
 <div class="wrap">
-  <!-- HERO -->
   <div class="hero">
     <div class="brand">
       <div class="brand-badge">S</div>
       SouFind
     </div>
-    <div class="hero-sub">Seu veículo protegido onde você estiver. Assine e acione socorro com um toque.</div>
+    <div class="hero-sub">Crie sua conta e acione socorro quando precisar — guincho, mecânico, pneu, bateria e mais.</div>
     <div class="steps">
-      <div class="step active" id="step1">1 · Dados</div>
+      <div class="step active" id="step1">1 · Seus dados</div>
       <div class="step" id="step2">2 · Veículo</div>
-      <div class="step" id="step3">3 · Plano</div>
     </div>
   </div>
 
-  <!-- CARD -->
   <div class="card">
 
     <!-- PAINEL 1 — DADOS PESSOAIS -->
@@ -209,7 +146,7 @@
       <div class="row2">
         <div class="field">
           <label>Placa</label>
-          <input id="p2-placa" type="text" placeholder="ABC-1234" maxlength="8" style="text-transform:uppercase">
+          <input id="p2-placa" type="text" placeholder="ABC1D23" maxlength="8" style="text-transform:uppercase">
         </div>
         <div class="field">
           <label>Ano</label>
@@ -224,107 +161,50 @@
         <label>Cidade</label>
         <input id="p2-cidade" type="text" placeholder="São Paulo">
       </div>
+
+      <div class="incluso-box">
+        <div class="incluso-titulo">O que você terá acesso</div>
+        <div class="incluso-item">Guincho / Reboque 24h</div>
+        <div class="incluso-item">Socorro mecânico, pneu e bateria</div>
+        <div class="incluso-item">Instalação de rastreador</div>
+        <div class="incluso-item">Acompanhamento do prestador em tempo real</div>
+        <div class="incluso-item">Pague só quando precisar usar</div>
+      </div>
+
       <div id="msg2" class="msg"></div>
-      <button class="btn btn-primary" onclick="irPasso3()">Continuar →</button>
+      <button class="btn btn-primary" id="btn-criar" onclick="criarConta()">Criar minha conta →</button>
       <button class="btn btn-outline" onclick="irPasso(1)">‹ Voltar</button>
-    </div>
-
-    <!-- PAINEL 3 — PLANO + PIX -->
-    <div class="panel" id="panel3">
-      <div class="panel-title">Escolha seu plano</div>
-      <div class="planos">
-        <div class="plano-card" id="plano-mensal" onclick="selecionarPlano('mensal')">
-          <div class="plano-nome">Mensal</div>
-          <div class="plano-valor">R$<span id="val-mensal">29,90</span></div>
-          <div class="plano-periodo">/mês</div>
-          <div class="plano-check"></div>
-        </div>
-        <div class="plano-card selected" id="plano-anual" onclick="selecionarPlano('anual')">
-          <div class="plano-economia">Melhor</div>
-          <div class="plano-nome">Anual</div>
-          <div class="plano-valor">R$<span id="val-anual">249,00</span></div>
-          <div class="plano-periodo">/ano · R$20,75/mês</div>
-          <div class="plano-check"></div>
-        </div>
-      </div>
-
-      <div class="inclusos">
-        <div class="inclusos-title">O que está incluso</div>
-        <div class="incluso">Socorro 24h (guincho, mecânico, bateria)</div>
-        <div class="incluso">Rastreamento em tempo real</div>
-        <div class="incluso">Acionamento por WhatsApp ou app</div>
-        <div class="incluso">Acompanhamento do prestador no mapa</div>
-      </div>
-
-      <!-- PIX -->
-      <div id="pix-area" style="margin-top:18px">
-        <div class="pix-box">
-          <div class="pix-logo">💚 PIX</div>
-          <div class="pix-title">Pague via PIX e ative na hora</div>
-          <div class="pix-valor" id="pix-valor-display">R$ 249,00</div>
-          <div class="pix-key-label">Chave PIX</div>
-          <div class="pix-key">
-            <span id="pix-key-val">marinhofreiref@gmail.com</span>
-            <button class="pix-copy" onclick="copiarPIX()">Copiar</button>
-          </div>
-          <div class="pix-hint">Após o pagamento, clique em "Confirmar pagamento" abaixo.</div>
-        </div>
-      </div>
-
-      <div id="msg3" class="msg"></div>
-      <button class="btn btn-primary" id="btn-confirmar" onclick="confirmarPagamento()">
-        ✓ Confirmar pagamento
-      </button>
-      <button class="btn btn-outline" onclick="irPasso(2)">‹ Voltar</button>
     </div>
 
     <!-- SUCESSO -->
     <div class="panel" id="panel-sucesso">
       <div class="success-screen">
         <div class="success-icon">🎉</div>
-        <div class="success-title">Cadastro recebido!</div>
+        <div class="success-title">Conta criada!</div>
         <div class="success-text">
-          Sua solicitação foi enviada. Nossa equipe irá verificar o pagamento e ativar sua conta em até <strong>2 horas</strong>. Você receberá uma confirmação no WhatsApp.
+          Seus dados de acesso foram enviados no seu WhatsApp.<br>
+          Quando precisar de socorro, é só abrir o app e acionar.<br>
+          <strong>Você paga apenas pelo serviço que usar.</strong>
         </div>
-        <button class="btn btn-whatsapp" onclick="abrirWhatsApp()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.531 5.845L.057 23.884l6.195-1.424A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.894 0-3.668-.512-5.188-1.407l-.372-.218-3.68.845.876-3.556-.241-.386A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-          Falar no WhatsApp
+        <button class="btn-whatsapp" onclick="abrirApp()">
+          Ir para o SouFind →
         </button>
       </div>
     </div>
 
-  </div><!-- /card -->
-</div><!-- /wrap -->
+  </div>
+</div>
 
 <script>
-  /* ── CONFIGURAÇÃO ──────────────────────────
-     Edite apenas este bloco para personalizar  */
   var CONFIG = {
-    PIX_KEY:        "marinhofreiref@gmail.com",
-    PRECO_MENSAL:   29.90,
-    PRECO_ANUAL:    249.00,
-    WHATSAPP_NUM:   "5511983059628",
-    BRIDGE_URL:     "https://bridge.soufind.com.br/api/bridge/cliente-cadastro"
+    BRIDGE_URL:   "https://bridge.soufind.com.br/api/bridge/cliente-cadastro",
+    APP_URL:      "https://socorro.soufind.com.br"
   };
-  /* ─────────────────────────────────────────── */
 
-  var planoSelecionado = "anual";
-  var dadosCadastro   = {};
-
-  function fmt(v) {
-    return "R$ " + v.toFixed(2).replace(".", ",");
-  }
-
-  function selecionarPlano(p) {
-    planoSelecionado = p;
-    document.getElementById("plano-mensal").classList.toggle("selected", p === "mensal");
-    document.getElementById("plano-anual").classList.toggle("selected", p === "anual");
-    var val = p === "mensal" ? CONFIG.PRECO_MENSAL : CONFIG.PRECO_ANUAL;
-    document.getElementById("pix-valor-display").textContent = fmt(val);
-  }
+  var dadosCadastro = {};
 
   function irPasso(n) {
-    [1,2,3].forEach(function(i) {
+    [1,2].forEach(function(i) {
       document.getElementById("panel" + i).classList.toggle("active", i === n);
       var s = document.getElementById("step" + i);
       s.classList.remove("active","done");
@@ -363,52 +243,31 @@
 
   function irPasso2() {
     var nome  = document.getElementById("p1-nome").value.trim();
-    var cpf   = document.getElementById("p1-cpf").value.trim();
     var phone = document.getElementById("p1-phone").value.trim();
     var email = document.getElementById("p1-email").value.trim();
-    if (!nome || !phone || !email) return msg("msg1","Preencha nome, WhatsApp e e-mail.","error");
-    if (cpf && cpf.replace(/\D/g,"").length !== 11) return msg("msg1","CPF inválido.","error");
+    if (!nome || !phone) return msg("msg1","Preencha nome e WhatsApp.","error");
     dadosCadastro.nome  = nome;
-    dadosCadastro.cpf   = cpf;
+    dadosCadastro.cpf   = document.getElementById("p1-cpf").value.trim();
     dadosCadastro.phone = phone.replace(/\D/g,"");
     dadosCadastro.email = email;
     msg("msg1","");
     irPasso(2);
   }
 
-  function irPasso3() {
+  async function criarConta() {
     var placa  = document.getElementById("p2-placa").value.trim();
-    var modelo = document.getElementById("p2-modelo").value.trim();
     var cidade = document.getElementById("p2-cidade").value.trim();
-    var ano    = document.getElementById("p2-ano").value.trim();
     if (!placa || !cidade) return msg("msg2","Preencha placa e cidade.","error");
+
     dadosCadastro.placa  = placa;
-    dadosCadastro.modelo = modelo;
-    dadosCadastro.ano    = ano;
+    dadosCadastro.modelo = document.getElementById("p2-modelo").value.trim();
+    dadosCadastro.ano    = document.getElementById("p2-ano").value.trim();
     dadosCadastro.cidade = cidade;
-    msg("msg2","");
-    irPasso(3);
-  }
 
-  function copiarPIX() {
-    navigator.clipboard.writeText(CONFIG.PIX_KEY).then(function() {
-      var btn = document.querySelector(".pix-copy");
-      var orig = btn.textContent;
-      btn.textContent = "Copiado!";
-      setTimeout(function(){ btn.textContent = orig; }, 2000);
-    });
-  }
-
-  async function confirmarPagamento() {
-    var btn = document.getElementById("btn-confirmar");
+    var btn = document.getElementById("btn-criar");
     btn.disabled = true;
-    btn.textContent = "Enviando...";
-    msg("msg3","");
-
-    dadosCadastro.plano    = planoSelecionado;
-    dadosCadastro.valor    = planoSelecionado === "mensal" ? CONFIG.PRECO_MENSAL : CONFIG.PRECO_ANUAL;
-    dadosCadastro.pixKey   = CONFIG.PIX_KEY;
-    dadosCadastro.status   = "aguardando_confirmacao";
+    btn.textContent = "Criando conta...";
+    msg("msg2","");
 
     try {
       var r = await fetch(CONFIG.BRIDGE_URL, {
@@ -416,31 +275,23 @@
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify(dadosCadastro)
       });
-      if (!r.ok) throw new Error("bridge_error");
-      [1,2,3].forEach(function(i){
+      if (!r.ok) throw new Error("erro");
+      [1,2].forEach(function(i){
         document.getElementById("panel"+i).classList.remove("active");
-        document.getElementById("step"+i).classList.remove("active","done");
         document.getElementById("step"+i).classList.add("done");
+        document.getElementById("step"+i).classList.remove("active");
       });
       document.getElementById("panel-sucesso").classList.add("active");
     } catch(e) {
-      msg("msg3","Erro ao enviar. Tente novamente.","error");
+      msg("msg2","Erro ao criar conta. Tente novamente.","error");
       btn.disabled = false;
-      btn.textContent = "✓ Confirmar pagamento";
+      btn.textContent = "Criar minha conta →";
     }
   }
 
-  function abrirWhatsApp() {
-    var nome  = dadosCadastro.nome  || "";
-    var plano = planoSelecionado === "mensal" ? "mensal" : "anual";
-    var txt   = encodeURIComponent("Olá! Me cadastrei no plano " + plano + " da SouFind. Nome: " + nome);
-    window.open("https://wa.me/" + CONFIG.WHATSAPP_NUM + "?text=" + txt, "_blank");
+  function abrirApp() {
+    window.location.href = CONFIG.APP_URL;
   }
-
-  /* inicializa display de valores */
-  document.getElementById("val-mensal").textContent = CONFIG.PRECO_MENSAL.toFixed(2).replace(".",",");
-  document.getElementById("val-anual").textContent  = CONFIG.PRECO_ANUAL.toFixed(2).replace(".",",");
-  document.getElementById("pix-key-val").textContent = CONFIG.PIX_KEY;
 </script>
 </body>
 </html>
