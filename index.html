@@ -946,10 +946,18 @@
       // OS concluída: mostra pagamento
       if (status === "completed") {
         const montant = parseFloat(d?.montant || 0);
+        const mpUrl   = d?.mp_checkout_url || null;
         if (montant > 0) {
           document.getElementById("pagValor").textContent = "R$ " + montant.toFixed(2).replace(".", ",");
-          document.getElementById("btnPagar").onclick = () => {
-            window.open("https://wa.me/" + wppCentral + "?text=" + encodeURIComponent("Quero pagar o atendimento OS #" + (osNumber||requeteId) + " no valor de R$ " + montant.toFixed(2)), "_blank");
+        }
+        const btnPagar = document.getElementById("btnPagar");
+        if (mpUrl) {
+          btnPagar.textContent = "Pagar agora →";
+          btnPagar.onclick = () => window.open(mpUrl, "_blank");
+        } else {
+          btnPagar.textContent = "Pagar via WhatsApp →";
+          btnPagar.onclick = () => {
+            window.open("https://wa.me/" + wppCentral + "?text=" + encodeURIComponent("Quero pagar o atendimento OS #" + (osNumber||requeteId) + " no valor de R$ " + (montant||0).toFixed(2)), "_blank");
           };
         }
         document.getElementById("pagCard").classList.add("show");
