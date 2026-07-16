@@ -300,11 +300,13 @@
           <label class="block">Descreva a situação
             <textarea id="note" name="note" placeholder="Ex: carro no acostamento, motor fumando, pneu traseiro direito furado..." style="min-height:80px"></textarea>
           </label>
-          <label class="block" style="margin-top:14px">
-            <span>Fotos da situação <span style="font-weight:400;color:#888">(até 4 fotos)</span></span>
-            <input type="file" id="photos" accept="image/*" multiple style="margin-top:8px" />
-          </label>
-          <div id="photo-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"></div>
+          <div id="foto-section" style="display:none;margin-top:14px">
+            <label class="block">
+              <span>Fotos da situação <span style="font-weight:400;color:#888">(até 2 fotos)</span></span>
+              <input type="file" id="photos" accept="image/*" multiple style="margin-top:8px" />
+            </label>
+            <div id="photo-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"></div>
+          </div>
           <div class="actions">
             <button type="button" class="ghost" data-back>← Voltar</button>
             <button type="button" id="submitBtn">Solicitar socorro</button>
@@ -667,9 +669,18 @@
   });
 
   // ── Foto ─────────────────────────────────────────────────────────────────────
+  const CATS_COM_FOTO = new Set(["guincho_leve","pane_eletrica","pane_mecanica","pneu","bateria","outro"]);
+  function atualizarFotoSection() {
+    const sel = document.querySelector("input[name=serviceType]:checked");
+    const show = sel && CATS_COM_FOTO.has(sel.value);
+    document.getElementById("foto-section").style.display = show ? "" : "none";
+    if (!show) { photosBase64 = []; document.getElementById("photo-preview").innerHTML = ""; }
+  }
+  document.querySelectorAll("input[name=serviceType]").forEach(el => el.addEventListener("change", atualizarFotoSection));
+
   let photosBase64 = [];
   document.getElementById("photos").addEventListener("change", (e) => {
-    const files = Array.from(e.target.files || []).slice(0, 4);
+    const files = Array.from(e.target.files || []).slice(0, 2);
     const preview = document.getElementById("photo-preview");
     preview.innerHTML = "";
     photosBase64 = [];
