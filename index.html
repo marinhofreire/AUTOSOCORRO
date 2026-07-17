@@ -1257,7 +1257,20 @@
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 <script>
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
+    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
+      .then(reg => {
+        reg.update();
+        reg.addEventListener('updatefound', () => {
+          const newSw = reg.installing;
+          if (!newSw) return;
+          newSw.addEventListener('statechange', () => {
+            if (newSw.state === 'installed' && navigator.serviceWorker.controller) {
+              newSw.postMessage({ type: 'SKIP_WAITING' });
+              window.location.reload();
+            }
+          });
+        });
+      }).catch(() => {});
   }
 </script>
 </body>
