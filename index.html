@@ -768,15 +768,15 @@
         const rawMsg = String(data?.message || data?.error || "").toLowerCase();
         const isActiveRide = rawMsg.includes("active ride") || rawMsg.includes("active_ride") || rawMsg.includes("already have");
         if (isActiveRide) {
-          // Tenta reabrir a OS existente automaticamente
-          const sfUser = getSfUser();
-          if (sfUser && sfUser.id && sfUser.token) {
+          // Tenta reabrir a OS existente automaticamente pelo telefone
+          const clientPhone = val("customerPhone");
+          if (clientPhone) {
             setStatus("error", "Atendimento aberto", "Você já tem uma OS em andamento. Buscando...");
             try {
               const ar = await fetch(bridgeApiBase.replace(/\/$/, "") + "/api/bridge/soufind/os-ativa-cliente", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userId: sfUser.id, token: sfUser.token }),
+                body: JSON.stringify({ phone: clientPhone }),
                 signal: AbortSignal.timeout(10000)
               });
               const ard = await ar.json().catch(() => null);
