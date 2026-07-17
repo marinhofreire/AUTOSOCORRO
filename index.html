@@ -734,7 +734,8 @@
       const res = await fetch(bridgeApiBase.replace(/\/$/, "") + "/api/bridge/soufind/public-rescue", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(30000)
       });
       const data = await res.json();
       if (res.ok && data.success) {
@@ -743,8 +744,29 @@
         if (demoMode && requeteId) {
           document.getElementById("demoRequeteId").value = String(requeteId);
         }
+        // Persistir no localStorage para retomar ao reabrir
+        if (requeteId) {
+          localStorage.setItem("sf_os_ativa", JSON.stringify({
+            requeteId, osNumber: bookingNumber,
+            lat: val("originLat"), lng: val("originLng"),
+            phone: val("customerPhone"),
+            criadoEm: Date.now()
+          }));
+        }
+      } else {
+        const msg = data?.message || data?.error || "Tente novamente.";
+        setStatus("error", "Erro ao registrar OS.", msg);
+        btn.disabled = false;
+        btn.textContent = "Solicitar socorro";
+        return;
       }
-    } catch (_) {}
+    } catch (err) {
+      const msg = err?.name === "TimeoutError" ? "Tempo esgotado — verifique sua conexão e tente novamente." : "Falha na conexão. Tente novamente.";
+      setStatus("error", "Não foi possível enviar a solicitação.", msg);
+      btn.disabled = false;
+      btn.textContent = "Solicitar socorro";
+      return;
+    }
 
     btn.disabled = false;
     btn.textContent = "Solicitar socorro";
@@ -979,12 +1001,63 @@
         if (status === "completed" && _driverChannel) { _driverChannel.unbind_all(); _driverChannel = null; }
       }
 
+      if (status === "completed") {
+        _limparOsSalva();
+      }
+
       if (status === "canceled" || status === "rejected") {
         btnCancelar.classList.remove("show");
         if (_driverChannel) { _driverChannel.unbind_all(); _driverChannel = null; }
+        _limparOsSalva();
       }
     });
   }
+
+  // ── Limpar OS salva ao finalizar ─────────────────────────────────────────────
+  function _limparOsSalva() { localStorage.removeItem("sf_os_ativa"); }
+
+  // ── Auto-tracking: restaurar OS ativa do localStorage ────────────────────────
+  (function() {
+    var salva = null;
+    try { salva = JSON.parse(localStorage.getItem("sf_os_ativa")); } catch (_) {}
+    if (salva && salva.requeteId && (Date.now() - salva.criadoEm) < 86400000) {
+      // OS salva com menos de 24h — verificar se ainda está ativa
+      document.getElementById("formSection").style.display = "none";
+      document.getElementById("trackCard").classList.add("show");
+      document.getElementById("trackOsNum").textContent = salva.osNumber ? "OS " + String(salva.osNumber).replace(/^#/, "") : "OS em andamento";
+      document.getElementById("trackMap").style.display = "none";
+
+      fetch(bridgeApiBase.replace(/\/$/, "") + "/api/bridge/os/by-external/" + encodeURIComponent(salva.requeteId))
+        .then(function(r) { return r.json(); })
+        .then(function(resp) {
+          if (!resp.ok || !resp.os) { _limparOsSalva(); throw new Error("not_found"); }
+          var os = resp.os;
+          var st = os.statut || "new";
+          if (st === "completed" || st === "canceled" || st === "rejected") {
+            _limparOsSalva();
+            document.getElementById("formSection").style.display = "block";
+            document.getElementById("trackCard").classList.remove("show");
+            return;
+          }
+          var cLat = salva.lat || os.latitude_depart || "0";
+          var cLng = salva.lng || os.longitude_depart || "0";
+          if (cLat !== "0") document.getElementById("trackMap").style.display = "";
+          showTrackCard(
+            String(salva.osNumber || os.booking_number || "").replace(/^#/, ""),
+            salva.phone || "",
+            salva.requeteId,
+            cLat, cLng
+          );
+          setTrackStep(st === "os_created" ? "new" : st);
+        })
+        .catch(function() {
+          _limparOsSalva();
+          document.getElementById("formSection").style.display = "block";
+          document.getElementById("trackCard").classList.remove("show");
+        });
+      return; // não prosseguir para o bloco ?os= URL
+    }
+  })();
 
   // ── Auto-tracking: se ?os= na URL, abrir tela de acompanhamento ────────────
   (function() {
@@ -1017,6 +1090,7 @@
   })();
 
   document.getElementById("btnNewOs").addEventListener("click", () => {
+    _limparOsSalva();
     document.getElementById("trackCard").classList.remove("show");
     document.getElementById("formSection").style.display = "block";
     // limpa formulário SEM resetar a página
