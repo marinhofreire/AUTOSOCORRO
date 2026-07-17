@@ -391,12 +391,23 @@
         </div>
       </div>
 
-      <!-- Card de pagamento (aparece ao completar) -->
+      <!-- Card de pagamento PIX (aparece ao confirmar/completar) -->
       <div class="pag-card" id="pagCard">
-        <div class="pag-title">Atendimento concluído! 🎉</div>
+        <div class="pag-title">Pague com PIX</div>
         <div class="pag-valor" id="pagValor">R$ --</div>
-        <div class="pag-sub">Valor acordado com o parceiro. Efetue o pagamento via PIX ou direto ao prestador.</div>
-        <button class="btn-pagar" id="btnPagar">Pagar via PIX →</button>
+        <!-- QR code PIX -->
+        <div id="pixQrWrap" style="display:none;text-align:center;margin:14px 0">
+          <img id="pixQrImg" src="" alt="QR Code PIX" style="width:200px;height:200px;border-radius:12px;border:2px solid #eee">
+          <div style="margin-top:10px;font-size:11px;color:#666">Aponte a câmera do seu banco para pagar</div>
+        </div>
+        <!-- Copia e cola PIX -->
+        <div id="pixCopiaCola" style="display:none;margin:10px 0">
+          <div style="font-size:11px;color:#888;margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.4px">Pix Copia e Cola</div>
+          <div id="pixCodigotxt" style="font-size:11px;color:#333;background:#f5f5f5;border-radius:8px;padding:10px;word-break:break-all;line-height:1.5;max-height:80px;overflow:hidden"></div>
+          <button onclick="copiarPix()" style="width:100%;margin-top:8px;padding:10px;background:#00c9a7;border:none;border-radius:10px;color:#fff;font-weight:700;font-size:14px;cursor:pointer">Copiar código PIX</button>
+        </div>
+        <button class="btn-pagar" id="btnPagar" style="display:none">Abrir no banco →</button>
+        <div id="pixStatus" style="font-size:12px;color:#888;margin-top:8px;text-align:center"></div>
       </div>
 
       <button class="btn-wpp" id="btnWpp">
@@ -980,21 +991,28 @@
         });
       }
 
-      // Pagamento: mostra ao confirmar (link MP gerado na hora do aceite) e também ao completar
+      // Pagamento PIX: exibe QR code inline ao confirmar e ao completar
       if (status === "confirmed" || status === "completed") {
-        const montant = parseFloat(d?.montant || 0);
-        const mpUrl   = d?.mp_checkout_url || null;
+        const montant     = parseFloat(d?.montant || 0);
+        const pixQrBase64 = d?.pix_qr_base64 || null;
+        const pixQrCode   = d?.pix_qr_code   || null;
+        const pixTicket   = d?.pix_ticket_url || null;
         if (montant > 0) {
           document.getElementById("pagValor").textContent = "R$ " + montant.toFixed(2).replace(".", ",");
-          const btnPagar = document.getElementById("btnPagar");
-          if (mpUrl) {
-            btnPagar.textContent = status === "confirmed" ? "Pagar agora →" : "Pagar online →";
-            btnPagar.onclick = () => window.open(mpUrl, "_blank");
-          } else {
-            btnPagar.textContent = "Combinar pagamento →";
-            btnPagar.onclick = () => {
-              window.open("https://wa.me/" + wppCentral + "?text=" + encodeURIComponent("Quero pagar o atendimento OS #" + (osNumber||requeteId) + " no valor de R$ " + (montant||0).toFixed(2)), "_blank");
-            };
+          if (pixQrBase64) {
+            document.getElementById("pixQrImg").src = "data:image/png;base64," + pixQrBase64;
+            document.getElementById("pixQrWrap").style.display = "";
+          }
+          if (pixQrCode) {
+            document.getElementById("pixCodigotxt").textContent = pixQrCode;
+            document.getElementById("pixCopiaCola").style.display = "";
+            window._pixCode = pixQrCode;
+          }
+          if (pixTicket) {
+            const btn = document.getElementById("btnPagar");
+            btn.textContent = "Abrir no banco →";
+            btn.style.display = "";
+            btn.onclick = () => window.open(pixTicket, "_blank");
           }
           document.getElementById("pagCard").classList.add("show");
         }
@@ -1015,6 +1033,22 @@
 
   // ── Limpar OS salva ao finalizar ─────────────────────────────────────────────
   function _limparOsSalva() { localStorage.removeItem("sf_os_ativa"); }
+
+  function copiarPix() {
+    var code = window._pixCode || document.getElementById("pixCodigotxt").textContent;
+    if (!code) return;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(code).then(function() {
+        var btn = document.querySelector("#pixCopiaCola button");
+        if (btn) { btn.textContent = "Copiado!"; setTimeout(function(){ btn.textContent = "Copiar código PIX"; }, 2000); }
+      });
+    } else {
+      var ta = document.createElement("textarea");
+      ta.value = code; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta);
+      var btn = document.querySelector("#pixCopiaCola button");
+      if (btn) { btn.textContent = "Copiado!"; setTimeout(function(){ btn.textContent = "Copiar código PIX"; }, 2000); }
+    }
+  }
 
   // ── Auto-tracking: restaurar OS ativa do localStorage ────────────────────────
   (function() {
