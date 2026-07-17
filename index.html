@@ -967,6 +967,17 @@
       }
 
       const status = d?.statut || d?.status || d?.data?.statut;
+      // Atualiza localStorage com status atual para restaurar corretamente ao reabrir
+      if (status) {
+        try {
+          var _salva = JSON.parse(localStorage.getItem("sf_os_ativa") || "null");
+          if (_salva && _salva.requeteId == requeteId) {
+            _salva.ultimoStatus = status;
+            if (d?.driver_id || d?.conducteur_id) _salva.driverId = d.driver_id || d.conducteur_id;
+            localStorage.setItem("sf_os_ativa", JSON.stringify(_salva));
+          }
+        } catch(_) {}
+      }
       if (!status) return;
 
       setTrackStep(status);
@@ -1076,13 +1087,13 @@
           var cLat = salva.lat || os.latitude_depart || "0";
           var cLng = salva.lng || os.longitude_depart || "0";
           if (cLat !== "0") document.getElementById("trackMap").style.display = "";
-          showTrackCard(
-            String(salva.osNumber || os.booking_number || "").replace(/^#/, ""),
-            salva.phone || "",
-            salva.requeteId,
-            cLat, cLng
-          );
-          setTrackStep(st === "os_created" ? "new" : st);
+          var osNum = String(salva.osNumber || os.booking_number || "").replace(/^#/, "");
+          showTrackCard(osNum, salva.phone || "", salva.requeteId, cLat, cLng);
+          // Usa o último status salvo pelo Pusher, ou o retornado pelo endpoint
+          var stepFinal = salva.ultimoStatus || (st === "os_created" ? "new" : st);
+          setTrackStep(stepFinal);
+          // Mensagem de retomada
+          setStatus("success", "Atendimento retomado — OS " + osNum, "Seu pedido continua em andamento.");
         })
         .catch(function() {
           _limparOsSalva();
