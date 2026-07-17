@@ -524,7 +524,7 @@
   (function initAuth() {
     var user = getSfUser();
     if (user && user.token) { showMainApp(user); }
-    else { showMainApp({}); }
+    else { showAuthGate(); }
   })();
 
   // ── Config ────────────────────────────────────────────────────────────────────
