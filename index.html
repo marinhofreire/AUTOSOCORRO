@@ -861,7 +861,7 @@
   function showTrackCard(osNumber, phone, requeteId, originLat, originLng) {
     document.getElementById("formSection").style.display = "none";
     document.getElementById("trackCard").classList.add("show");
-    document.getElementById("trackOsNum").textContent = osNumber ? "OS #" + osNumber : "OS registrada";
+    document.getElementById("trackOsNum").textContent = osNumber ? "OS " + String(osNumber).replace(/^#/, "") : "OS registrada";
 
     const msg = encodeURIComponent(
       osNumber
@@ -958,25 +958,25 @@
         });
       }
 
-      // OS concluída: mostra pagamento
-      if (status === "completed") {
+      // Pagamento: mostra ao confirmar (link MP gerado na hora do aceite) e também ao completar
+      if (status === "confirmed" || status === "completed") {
         const montant = parseFloat(d?.montant || 0);
         const mpUrl   = d?.mp_checkout_url || null;
         if (montant > 0) {
           document.getElementById("pagValor").textContent = "R$ " + montant.toFixed(2).replace(".", ",");
+          const btnPagar = document.getElementById("btnPagar");
+          if (mpUrl) {
+            btnPagar.textContent = status === "confirmed" ? "Pagar agora →" : "Pagar online →";
+            btnPagar.onclick = () => window.open(mpUrl, "_blank");
+          } else {
+            btnPagar.textContent = "Combinar pagamento →";
+            btnPagar.onclick = () => {
+              window.open("https://wa.me/" + wppCentral + "?text=" + encodeURIComponent("Quero pagar o atendimento OS #" + (osNumber||requeteId) + " no valor de R$ " + (montant||0).toFixed(2)), "_blank");
+            };
+          }
+          document.getElementById("pagCard").classList.add("show");
         }
-        const btnPagar = document.getElementById("btnPagar");
-        if (mpUrl) {
-          btnPagar.textContent = "Pagar agora →";
-          btnPagar.onclick = () => window.open(mpUrl, "_blank");
-        } else {
-          btnPagar.textContent = "Pagar via WhatsApp →";
-          btnPagar.onclick = () => {
-            window.open("https://wa.me/" + wppCentral + "?text=" + encodeURIComponent("Quero pagar o atendimento OS #" + (osNumber||requeteId) + " no valor de R$ " + (montant||0).toFixed(2)), "_blank");
-          };
-        }
-        document.getElementById("pagCard").classList.add("show");
-        if (_driverChannel) { _driverChannel.unbind_all(); _driverChannel = null; }
+        if (status === "completed" && _driverChannel) { _driverChannel.unbind_all(); _driverChannel = null; }
       }
 
       if (status === "canceled" || status === "rejected") {
