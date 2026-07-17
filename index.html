@@ -473,11 +473,13 @@
   function showMainApp(user) {
     document.getElementById("loginGate").style.display = "none";
     document.getElementById("mainCard").style.display = "block";
-    var bar = document.getElementById("userBar");
-    bar.classList.add("show");
-    document.getElementById("userBarName").textContent = "Olá, " + (user.name || user.email || "cliente");
-    if (user.name) document.getElementById("customerName").value = user.name;
-    if (user.phone) document.getElementById("customerPhone").value = user.phone;
+    if (user && (user.name || user.email)) {
+      var bar = document.getElementById("userBar");
+      bar.classList.add("show");
+      document.getElementById("userBarName").textContent = "Olá, " + (user.name || user.email);
+    }
+    if (user && user.name) document.getElementById("customerName").value = user.name;
+    if (user && user.phone) document.getElementById("customerPhone").value = user.phone;
   }
 
   async function doLogin() {
@@ -522,7 +524,7 @@
   (function initAuth() {
     var user = getSfUser();
     if (user && user.token) { showMainApp(user); }
-    else { showAuthGate(); }
+    else { showMainApp({}); }
   })();
 
   // ── Config ────────────────────────────────────────────────────────────────────
