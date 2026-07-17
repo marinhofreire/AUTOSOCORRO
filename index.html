@@ -477,7 +477,7 @@
       });
       var d = await r.json();
       if (!r.ok || !d.ok) { msg.textContent = d.message || "E-mail ou senha incorretos."; return; }
-      setSfUser({ token: d.token, name: d.user && d.user.name ? d.user.name : null, email: d.user && d.user.email ? d.user.email : email, phone: d.user && d.user.phone ? d.user.phone : null });
+      setSfUser({ token: d.token, id: d.user && d.user.id ? d.user.id : null, name: d.user && d.user.name ? d.user.name : null, email: d.user && d.user.email ? d.user.email : email, phone: d.user && d.user.phone ? d.user.phone : null });
       showMainApp(getSfUser());
     } catch (e) {
       msg.textContent = "Erro de conexão. Tente novamente.";
@@ -765,8 +765,34 @@
           }));
         }
       } else {
-        const msg = data?.message || data?.error || "Tente novamente.";
-        setStatus("error", "Erro ao registrar OS.", msg);
+        const rawMsg = String(data?.message || data?.error || "").toLowerCase();
+        const isActiveRide = rawMsg.includes("active ride") || rawMsg.includes("active_ride") || rawMsg.includes("already have");
+        if (isActiveRide) {
+          // Tenta reabrir a OS existente automaticamente
+          const sfUser = getSfUser();
+          if (sfUser && sfUser.id && sfUser.token) {
+            setStatus("error", "Atendimento aberto", "Você já tem uma OS em andamento. Buscando...");
+            try {
+              const ar = await fetch(bridgeApiBase.replace(/\/$/, "") + "/api/bridge/soufind/os-ativa-cliente", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId: sfUser.id, token: sfUser.token }),
+                signal: AbortSignal.timeout(10000)
+              });
+              const ard = await ar.json().catch(() => null);
+              if (ard && ard.ok && ard.requete_id) {
+                btn.disabled = false;
+                btn.textContent = "Solicitar socorro";
+                showTrackCard(ard.booking_number || ard.requete_id, val("customerPhone"), ard.requete_id, ard.lat_origem || val("originLat"), ard.lng_origem || val("originLng"));
+                return;
+              }
+            } catch {}
+          }
+          setStatus("error", "Atendimento em andamento", "Você já tem uma OS aberta. Aguarde o parceiro ou cancele pelo acompanhamento.");
+        } else {
+          const msg = data?.message || data?.error || "Tente novamente.";
+          setStatus("error", "Erro ao registrar OS.", msg);
+        }
         btn.disabled = false;
         btn.textContent = "Solicitar socorro";
         return;
