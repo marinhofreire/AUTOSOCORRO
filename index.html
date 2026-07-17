@@ -783,7 +783,7 @@
               if (ard && ard.ok && ard.requete_id) {
                 btn.disabled = false;
                 btn.textContent = "Solicitar socorro";
-                showTrackCard(ard.booking_number || ard.requete_id, val("customerPhone"), ard.requete_id, ard.lat_origem || val("originLat"), ard.lng_origem || val("originLng"));
+                showTrackCard(ard.booking_number || ard.requete_id, val("customerPhone"), Number(ard.requete_id), ard.lat_origem || val("originLat"), ard.lng_origem || val("originLng"));
                 return;
               }
             } catch {}
