@@ -1,4 +1,4 @@
-const CACHE = 'soufind-socorro-v1';
+const CACHE = 'soufind-socorro-v3';
 
 self.addEventListener('install', e => {
   e.waitUntil(
