@@ -136,6 +136,17 @@
     .btn-cancelar-os:hover { background: #ffe0e0; }
     .btn-cancelar-os.show { display: block; }
 
+    /* Campo preço sugerido */
+    .preco-wrap { margin-top: 20px; display: none; }
+    .preco-wrap.show { display: block; }
+    .preco-label { font-size: 14px; font-weight: 700; color: #111; margin-bottom: 8px; display: block; }
+    .preco-input-row { display: flex; align-items: center; background: #f5f5f5; border: 2px solid #e0e0e0; border-radius: 14px; overflow: hidden; transition: border-color .2s; }
+    .preco-input-row:focus-within { border-color: var(--sf-success); }
+    .preco-rs { padding: 13px 12px 13px 16px; font-size: 18px; font-weight: 800; color: #333; background: transparent; }
+    #precoSugerido { border: none; background: transparent; font-size: 22px; font-weight: 900; color: #111; width: 100%; padding: 10px 16px 10px 0; outline: none; -moz-appearance: textfield; }
+    #precoSugerido::-webkit-outer-spin-button, #precoSugerido::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .preco-hint { font-size: 12px; color: #888; margin-top: 6px; }
+
     /* Modal contra-proposta */
     .cp-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 300; display: none; align-items: flex-end; justify-content: center; }
     .cp-overlay.show { display: flex; }
@@ -243,6 +254,15 @@
             <label class="service-option"><input type="radio" name="serviceType" value="combustivel"><span class="service-chip">⛽ Combustível</span></label>
             <label class="service-option"><input type="radio" name="serviceType" value="outro"><span class="service-chip">❓ Outro</span></label>
           </div>
+          <div class="preco-wrap" id="precoWrap">
+            <label class="preco-label" for="precoSugerido">Sua proposta de preço</label>
+            <div class="preco-input-row">
+              <span class="preco-rs">R$</span>
+              <input type="number" id="precoSugerido" name="precoSugerido" min="1" step="1" placeholder="0" />
+            </div>
+            <p class="preco-hint" id="precoHint">Selecione o tipo de atendimento para ver o valor de referência.</p>
+          </div>
+
           <div class="actions">
             <button type="button" data-next>Continuar →</button>
           </div>
@@ -544,6 +564,8 @@
 
     if (step === 1) {
       if (!selectedService()) { setStatus("error", "Escolha o tipo de atendimento antes de continuar."); return false; }
+      const precoVal = parseFloat(document.getElementById("precoSugerido").value) || 0;
+      if (precoVal <= 0) { setStatus("error", "Informe o valor que deseja pagar pelo atendimento."); return false; }
     }
     if (step === 2) {
       const addr = val("originAddress");
@@ -571,6 +593,38 @@
     return el ? el.value : null;
   }
   function val(id) { return document.getElementById(id).value.trim(); }
+
+  // ── Tabela de preços (base para sugestão ao cliente) ─────────────────────────
+  const SF_PRICING = {
+    guincho_leve:   { saida: 140, km: 6  },
+    guincho:        { saida: 140, km: 6  },
+    guincho_medio:  { saida: 220, km: 10 },
+    guincho_pesado: { saida: 350, km: 15 },
+    pane_eletrica:  { saida: 120, km: 3  },
+    pane_mecanica:  { saida: 120, km: 3  },
+    combustivel:    { saida: 120, km: 4  },
+    pneu:           { saida: 100, km: 3  },
+    bateria:        { saida: 100, km: 3  },
+    chaveiro:       { saida: 200, km: 4  },
+  };
+
+  document.querySelectorAll("input[name=serviceType]").forEach(function(radio) {
+    radio.addEventListener("change", function() {
+      var wrap = document.getElementById("precoWrap");
+      var inp  = document.getElementById("precoSugerido");
+      var hint = document.getElementById("precoHint");
+      wrap.classList.add("show");
+      var t = SF_PRICING[this.value];
+      if (t) {
+        inp.placeholder = t.saida;
+        if (!inp.value || inp.value === "0") inp.value = t.saida;
+        hint.textContent = "Referência: R$" + t.saida + " (base) + R$" + t.km + "/km. Você pode propor o valor que preferir.";
+      } else {
+        inp.placeholder = "150";
+        hint.textContent = "Digite o valor que você deseja pagar pelo atendimento.";
+      }
+    });
+  });
 
   // ── Status / UI ──────────────────────────────────────────────────────────────
   const statusBox = document.getElementById("statusBox");
@@ -736,7 +790,8 @@
       destinationLng: val("destinationLng"),
       note: val("note"),
       photo: photosBase64[0] || null,
-      photos: photosBase64
+      photos: photosBase64,
+      preco: parseFloat(document.getElementById("precoSugerido").value) || 0
     };
 
     let bookingNumber = null;
